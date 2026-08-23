@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Das Zinnoberrot des App-Themes, damit Startsymbol und App zusammenpassen. -->
+    <color name="ic_launcher_background">#C8442A</color>
+</resources>
