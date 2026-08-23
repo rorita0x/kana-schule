@@ -9,12 +9,12 @@ import java.nio.file.StandardCopyOption
 import java.nio.file.StandardOpenOption
 
 /**
- * Der Lernstand als eine JSON-Datei plus ein Anhaenge-Log.
+ * Der Lernstand als eine JSON-Datei plus ein Anhänge-Log.
  *
  * 230 Zeichen mit je einem Dutzend Feldern sind rund 60 Kilobyte, und der
- * Scheduler laedt immer den vollstaendigen Zustand - es gibt keine Abfrage,
- * fuer die ein Index etwas braechte. Der Rohlog waechst dagegen unbegrenzt,
- * deshalb steht er als JSONL daneben und wird nur beim Anhaengen beruehrt.
+ * Scheduler lädt immer den vollständigen Zustand - es gibt keine Abfrage,
+ * für die ein Index etwas brächte. Der Rohlog wächst dagegen unbegrenzt,
+ * deshalb steht er als JSONL daneben und wird nur beim Anhängen berührt.
  */
 class FileProgressStore(
     directory: String = appDataDir(),
@@ -54,9 +54,9 @@ class FileProgressStore(
 
     /**
      * Schreibt in eine Nebendatei, erzwingt das Durchschreiben auf den
-     * Datentraeger und benennt dann atomar um. Ohne das zerstoert ein
+     * Datenträger und benennt dann atomar um. Ohne das zerstört ein
      * Prozessabbruch mitten im Schreiben den gesamten Lernstand - und genau
-     * das ist der Fehlermodus, fuer den man hinterher JSON verantwortlich
+     * das ist der Fehlermodus, für den man hinterher JSON verantwortlich
      * macht.
      */
     override fun save(state: AppState) {
@@ -81,7 +81,7 @@ class FileProgressStore(
                 StandardCopyOption.ATOMIC_MOVE,
             )
         } catch (e: IOException) {
-            // Manche Dateisysteme koennen ATOMIC_MOVE nicht; dann ohne.
+            // Manche Dateisysteme können ATOMIC_MOVE nicht; dann ohne.
             Files.move(tempFile, stateFile, StandardCopyOption.REPLACE_EXISTING)
         }
     }

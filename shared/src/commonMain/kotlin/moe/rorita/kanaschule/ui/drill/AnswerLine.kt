@@ -32,9 +32,9 @@ import moe.rorita.kanaschule.ui.theme.LocalFeedbackColors
 /**
  * Die getippte Antwort mit blinkendem Cursor - kein TextField.
  *
- * Damit entfaellt die gesamte Klasse von IME-Problemen: kein Systemkeyboard,
- * das ueber der eigenen Tastatur aufgeht, keine Autokorrektur, die „tu“ zu
- * „to“ macht, und keine Vorschlagsleiste, die die Zeitmessung verfaelscht.
+ * Damit entfällt die gesamte Klasse von IME-Problemen: kein Systemkeyboard,
+ * das über der eigenen Tastatur aufgeht, keine Autokorrektur, die „tu“ zu
+ * „to“ macht, und keine Vorschlagsleiste, die die Zeitmessung verfälscht.
  */
 @Composable
 fun AnswerLine(
@@ -82,7 +82,7 @@ fun AnswerLine(
                 ),
         )
 
-        // Fester Platz fuer die Rueckmeldung: sonst springt die Glyphenkarte,
+        // Fester Platz für die Rückmeldung: sonst springt die Glyphenkarte,
         // sobald „richtig“ oder „falsch“ erscheint.
         Box(
             modifier = Modifier

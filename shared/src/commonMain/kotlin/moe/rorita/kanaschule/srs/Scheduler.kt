@@ -8,9 +8,9 @@ import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.kana.Verdict
 
 /**
- * Reine Zustandsuebergaenge. Kein I/O, keine Uhr, kein Zufall ausser dem, was
+ * Reine Zustandsübergänge. Kein I/O, keine Uhr, kein Zufall ausser dem, was
  * hereingegeben wird - damit ist die gesamte Lernlogik ohne Compose und ohne
- * Geraet testbar.
+ * Gerät testbar.
  */
 object Scheduler {
 
@@ -26,12 +26,12 @@ object Scheduler {
     /** Wie viele Boxen ein Fehler kostet. */
     const val DEMOTION = 3
 
-    /** Ab dieser Box schuetzt eine langsame Antwort vor dem Aufstieg. */
+    /** Ab dieser Box schützt eine langsame Antwort vor dem Aufstieg. */
     private const val SLOW_GUARD_BOX = 4
 
     private const val EWMA_ALPHA = 0.3
 
-    /** Obergrenze fuer den Partner einer Verwechslung. */
+    /** Obergrenze für den Partner einer Verwechslung. */
     private const val CONFUSION_PARTNER_BOX = 4
 
     fun apply(
@@ -43,7 +43,7 @@ object Scheduler {
         random: Random,
     ): ItemState = when (verdict) {
         // Tippfehler sind neutral: kein Boxwechsel, kein Streak-Verlust, und die
-        // Antwortzeit des Wiederholungsversuchs verfaelscht den Mittelwert nicht.
+        // Antwortzeit des Wiederholungsversuchs verfälscht den Mittelwert nicht.
         is Verdict.Typo -> state
 
         is Verdict.Correct -> correct(state, latencyMs, nowMs, mode, random)
@@ -87,10 +87,10 @@ object Scheduler {
     /**
      * Bewusst kein Reset auf Box 0: ein Totalabsturz nach einem einzigen
      * Ausrutscher drillt Bekanntes neu und ist der Hauptgrund, aus dem Leute
-     * Wiederholungs-Apps aufgeben. Drei Boxen sind ein spuerbarer, aber
-     * ueberlebbarer Rueckschlag.
+     * Wiederholungs-Apps aufgeben. Drei Boxen sind ein spürbarer, aber
+     * überlebbarer Rückschlag.
      *
-     * Im Speed-Drill bleibt die Box unberuehrt, sonst wuerde man den Modus
+     * Im Speed-Drill bleibt die Box unberührt, sonst würde man den Modus
      * meiden, statt ihn zu nutzen.
      */
     private fun lapse(
@@ -150,6 +150,6 @@ object Scheduler {
     private fun blend(current: Int, latencyMs: Int): Int =
         if (current == 0) latencyMs else (current * (1 - EWMA_ALPHA) + latencyMs * EWMA_ALPHA).roundToInt()
 
-    /** So viele richtige Antworten in Folge loesen den Relearning-Zustand. */
+    /** So viele richtige Antworten in Folge lösen den Relearning-Zustand. */
     const val RELEARN_STREAK = 2
 }

@@ -3,10 +3,10 @@ package moe.rorita.kanaschule.srs
 import moe.rorita.kanaschule.kana.KanaId
 
 /**
- * Die Reihenfolge innerhalb einer Session. Hier steckt das Fahrschul-Gefuehl,
+ * Die Reihenfolge innerhalb einer Session. Hier steckt das Fahrschul-Gefühl,
  * nicht in den Boxen: ein verpasstes Zeichen kommt nach genau drei anderen
- * Fragen wieder, und noch einmal nach zehn. Feste Abstaende, nicht zufaellige -
- * der Lernende lernt unterbewusst „das kommt zurueck“, und das ist der ganze
+ * Fragen wieder, und noch einmal nach zehn. Feste Abstände, nicht zufällige -
+ * der Lernende lernt unterbewusst „das kommt zurück“, und das ist der ganze
  * psychologische Motor.
  */
 class SessionQueue(initial: List<KanaId>) {
@@ -19,7 +19,7 @@ class SessionQueue(initial: List<KanaId>) {
     val pending: List<KanaId> get() = queue.toList()
 
     /**
-     * Nimmt das naechste Zeichen. Dasselbe Zeichen kommt nie zweimal
+     * Nimmt das nächste Zeichen. Dasselbe Zeichen kommt nie zweimal
      * hintereinander; notfalls wird mit dem folgenden getauscht.
      */
     fun next(): KanaId? {
@@ -40,13 +40,13 @@ class SessionQueue(initial: List<KanaId>) {
         insertAt(MISS_FAR, id)
     }
 
-    /** Tippfehler: direkt nach der naechsten Frage nochmal. */
+    /** Tippfehler: direkt nach der nächsten Frage nochmal. */
     fun requeueTypo(id: KanaId) = insertAt(TYPO_GAP, id)
 
     /**
      * Verwechslungspaar abwechselnd einstreuen. Verschachtelter Kontrast ist
-     * die einzige Praesentationsform, die Unterscheidung wirklich aufbaut;
-     * denselben Partner mehrfach am Stueck zu zeigen tut es nicht.
+     * die einzige Präsentationsform, die Unterscheidung wirklich aufbaut;
+     * denselben Partner mehrfach am Stück zu zeigen tut es nicht.
      */
     fun requeueConfusionPair(target: KanaId, other: KanaId) {
         insertAt(2, other)
@@ -55,14 +55,14 @@ class SessionQueue(initial: List<KanaId>) {
         insertAt(9, target)
     }
 
-    /** Haengt Nachschub hinten an, etwa fuer die Nachspielzeit. */
+    /** Hängt Nachschub hinten an, etwa für die Nachspielzeit. */
     fun append(ids: List<KanaId>) {
         queue += ids
     }
 
     /**
-     * Einfuegen nach [after] weiteren Fragen. Liegt dasselbe Zeichen schon
-     * direkt daneben, wird nicht eingefuegt - sonst entstehen Doppel.
+     * Einfügen nach [after] weiteren Fragen. Liegt dasselbe Zeichen schon
+     * direkt daneben, wird nicht eingefügt - sonst entstehen Doppel.
      */
     private fun insertAt(after: Int, id: KanaId) {
         val index = after.coerceIn(0, queue.size)

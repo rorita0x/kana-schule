@@ -10,7 +10,7 @@ import moe.rorita.kanaschule.kana.KanaTable
 import moe.rorita.kanaschule.kana.Pronunciation
 
 /**
- * Faengt genau den Fehler, der sonst erst beim Lernen auffaellt: ein Zeichen,
+ * Fängt genau den Fehler, der sonst erst beim Lernen auffällt: ein Zeichen,
  * dessen Aufnahme fehlt oder in einem Format vorliegt, das die Desktop-JVM
  * ohne Zusatzbibliothek nicht lesen kann.
  */

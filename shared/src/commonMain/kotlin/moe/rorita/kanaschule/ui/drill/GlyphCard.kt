@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.sp
 import moe.rorita.kanaschule.kana.Kana
 
 /**
- * Das Zeichen selbst. Die Schriftgroesse kommt aus der verfuegbaren Flaeche,
+ * Das Zeichen selbst. Die Schriftgröße kommt aus der verfügbaren Fläche,
  * nicht aus einer festen Zahl: dasselbe Kana soll auf dem Handy die Mitte
- * fuellen und auf dem Desktop nicht laecherlich klein wirken.
+ * füllen und auf dem Desktop nicht lächerlich klein wirken.
  */
 @Composable
 fun GlyphCard(

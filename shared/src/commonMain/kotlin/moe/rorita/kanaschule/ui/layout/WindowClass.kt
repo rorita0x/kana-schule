@@ -8,11 +8,11 @@ import androidx.compose.ui.unit.dp
 enum class WidthClass { COMPACT, MEDIUM, EXPANDED }
 
 /**
- * Fensterklasse, aus der tatsaechlichen Flaeche abgeleitet - nicht aus der
+ * Fensterklasse, aus der tatsächlichen Fläche abgeleitet - nicht aus der
  * Plattform. Ein Desktop-Fenster kann schmal sein, ein Tablet breit.
  *
- * [isShort] ist orthogonal zur Breite und faengt den einen Fall ab, der sonst
- * regelmaessig kaputt aussieht: Handy im Querformat.
+ * [isShort] ist orthogonal zur Breite und fängt den einen Fall ab, der sonst
+ * regelmäßig kaputt aussieht: Handy im Querformat.
  */
 @Immutable
 data class WindowClass(

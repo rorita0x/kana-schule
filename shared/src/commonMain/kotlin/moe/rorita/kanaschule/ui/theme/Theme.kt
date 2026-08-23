@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 import moe.rorita.kanaschule.store.ThemeMode
 
 /**
- * Farben fuer Bewertungen. Bewusst neben dem Material-Schema, weil „richtig“
- * und „falsch“ hier eigene, ueber beide Modi stabile Rollen sind.
+ * Farben für Bewertungen. Bewusst neben dem Material-Schema, weil „richtig“
+ * und „falsch“ hier eigene, über beide Modi stabile Rollen sind.
  */
 @Immutable
 data class FeedbackColors(

@@ -3,7 +3,7 @@ package moe.rorita.kanaschule.store
 import android.content.Context
 
 /**
- * Haelt den Application-Context, damit der gemeinsame Code ohne
+ * Hält den Application-Context, damit der gemeinsame Code ohne
  * Context-Parameter an sein Datenverzeichnis kommt. Wird von der
  * Application-Klasse in :androidApp gesetzt.
  */

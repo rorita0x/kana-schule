@@ -1,7 +1,7 @@
 package moe.rorita.kanaschule.kana
 
 /**
- * Der vollstaendige Datensatz, aus [KanaSeed] mechanisch aufgebaut.
+ * Der vollständige Datensatz, aus [KanaSeed] mechanisch aufgebaut.
  *
  * Katakana entsteht aus Hiragana durch den Unicode-Versatz von 0x60, Dakuten
  * durch +1 und Handakuten durch +2 auf dem Basiszeichen. Deshalb steht in der
@@ -100,7 +100,7 @@ object KanaTable {
         }
     }
 
-    /** Dieselbe Lesung in der anderen Schrift. Woerter haben keinen Partner. */
+    /** Dieselbe Lesung in der anderen Schrift. Wörter haben keinen Partner. */
     private fun partnerId(kana: Kana): KanaId? =
         if (kana.kind == ItemKind.WORD) {
             null

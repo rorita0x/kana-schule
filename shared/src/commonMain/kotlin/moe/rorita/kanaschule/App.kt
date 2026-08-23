@@ -49,7 +49,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
     KanaTheme(mode = viewModel.theme) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             // Ohne das liegt der Inhalt unter Status- und Navigationsleiste,
-            // denn die Activity laeuft randlos. Die Flaeche wird nach dem
+            // denn die Activity läuft randlos. Die Fläche wird nach dem
             // Abzug gemessen, damit die Fensterklasse den nutzbaren Bereich
             // beschreibt.
             BoxWithConstraints(
@@ -125,8 +125,8 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
         }
     }
 
-    // Der Fokus muss nach jedem Fragenwechsel zurueck auf die Wurzel, sonst
-    // verschluckt der Desktop die naechste Eingabe. Erst einen Frame abwarten:
+    // Der Fokus muss nach jedem Fragenwechsel zurück auf die Wurzel, sonst
+    // verschluckt der Desktop die nächste Eingabe. Erst einen Frame abwarten:
     // vor der ersten Platzierung ist der Fokusknoten noch nicht bereit.
     LaunchedEffect(state.kana, state.learn, state.result, state.loading) {
         withFrameNanos { }
@@ -142,7 +142,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 private fun handleKey(event: KeyEvent, viewModel: KanaViewModel): Boolean {
     if (event.type != KeyEventType.KeyDown) return false
 
-    // Beim Vorstellen neuer Zeichen gibt es nichts zu tippen: Enter blaettert
+    // Beim Vorstellen neuer Zeichen gibt es nichts zu tippen: Enter blättert
     // weiter, Leertaste spielt die Aussprache noch einmal.
     val learn = viewModel.ui.learn
     if (learn != null) {

@@ -9,7 +9,7 @@ enum class Script { HIRAGANA, KATAKANA }
 @Serializable
 enum class KanaClass { GOJUON, DAKUTEN, HANDAKUTEN, YOON, SPECIAL }
 
-/** Zeile der Gojuon-Tafel bzw. Gruppe fuer Dakuten und Yoon. */
+/** Zeile der Gojuon-Tafel bzw. Gruppe für Dakuten und Yoon. */
 @Serializable
 enum class Row {
     A, KA, SA, TA, NA, HA, MA, YA, RA, WA, N,
@@ -46,7 +46,7 @@ data class Kana(
     /** Modifiziertes Hepburn: was die App als richtige Schreibweise anzeigt. */
     val canonical: String,
     val answers: List<Answer>,
-    /** Basiszeichen: が -> か, きゃ -> き. Bei Gojuon und Woertern null. */
+    /** Basiszeichen: が -> か, きゃ -> き. Bei Gojuon und Wörtern null. */
     val baseId: KanaId? = null,
     /** Dasselbe Zeichen in der anderen Schrift: し <-> シ. */
     val partnerId: KanaId? = null,

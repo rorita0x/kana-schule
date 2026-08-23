@@ -5,11 +5,11 @@ import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.PronunciationHint
 
 /**
- * Eine Vorstellungskarte fuer ein Zeichen.
+ * Eine Vorstellungskarte für ein Zeichen.
  *
  * Beide Schriften stehen zusammen auf der Karte, auch wenn erst eine von
  * beiden abgefragt wird: し und シ sind dieselbe Lesung, und die Verbindung
- * einmal gesehen zu haben kostet nichts und spart spaeter Arbeit.
+ * einmal gesehen zu haben kostet nichts und spart später Arbeit.
  */
 @Immutable
 data class LearnCard(
@@ -30,12 +30,12 @@ data class LearnCard(
 @Immutable
 data class LearnState(
     val card: LearnCard,
-    /** true: alle Zeichen durchblaettern, nicht nur die noch nicht gelernten. */
+    /** true: alle Zeichen durchblättern, nicht nur die noch nicht gelernten. */
     val showAll: Boolean,
     val muted: Boolean,
     /**
-     * true, wenn der Lernmodus aus dem Hauptmenue kommt. Sonst ist es die
-     * Vorstellung der neuen Zeichen vor einer Uebungsrunde, und danach geht
+     * true, wenn der Lernmodus aus dem Hauptmenü kommt. Sonst ist es die
+     * Vorstellung der neuen Zeichen vor einer Übungsrunde, und danach geht
      * es direkt ins Abfragen.
      */
     val standalone: Boolean,

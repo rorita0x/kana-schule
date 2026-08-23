@@ -5,7 +5,7 @@ import java.nio.file.Path
 
 /**
  * Legt das Verzeichnis samt Elternverzeichnissen an und gibt den absoluten
- * Pfad zurueck.
+ * Pfad zurück.
  */
 internal fun ensureDir(path: Path): String {
     Files.createDirectories(path)

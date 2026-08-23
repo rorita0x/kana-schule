@@ -28,9 +28,9 @@ import moe.rorita.kanaschule.ui.theme.LocalFeedbackColors
 import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 
 /**
- * Der Abschluss. Ganz oben steht die Veraenderung der Pruefungsreife mit
- * Pfeil - nicht die Trefferquote dieser Session, denn die haengt vor allem
- * daran, wie viel Neues dabei war, und wuerde damit genau das richtige
+ * Der Abschluss. Ganz oben steht die Veränderung der Prüfungsreife mit
+ * Pfeil - nicht die Trefferquote dieser Session, denn die hängt vor allem
+ * daran, wie viel Neues dabei war, und würde damit genau das richtige
  * Verhalten bestrafen.
  */
 @Composable
@@ -64,7 +64,7 @@ fun SummaryScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "Pruefungsreif",
+                        text = "Prüfungsreif",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

@@ -4,8 +4,8 @@ package moe.rorita.kanaschule.store
  * Zugriff auf den gespeicherten Lernstand.
  *
  * Absichtlich blockierend und nicht suspend: die Implementierung schreibt ein
- * paar Dutzend Kilobyte, und ein synchrones Interface haelt die Tests frei von
- * Coroutine-Infrastruktur. Aufrufer sind dafuer zustaendig, das nicht auf dem
+ * paar Dutzend Kilobyte, und ein synchrones Interface hält die Tests frei von
+ * Coroutine-Infrastruktur. Aufrufer sind dafür zuständig, das nicht auf dem
  * Hauptthread zu tun.
  */
 interface ProgressStore {
@@ -17,10 +17,10 @@ interface ProgressStore {
 
     fun appendReview(entry: ReviewEntry)
 
-    /** Die letzten [limit] Antworten, aelteste zuerst. */
+    /** Die letzten [limit] Antworten, älteste zuerst. */
     fun readReviews(limit: Int = DEFAULT_REVIEW_LIMIT): List<ReviewEntry>
 
-    /** Was beim letzten Laden schiefging - fuer eine Meldung im UI. */
+    /** Was beim letzten Laden schiefging - für eine Meldung im UI. */
     val lastLoadProblem: String? get() = null
 
     companion object {
@@ -28,7 +28,7 @@ interface ProgressStore {
     }
 }
 
-/** Fuer Tests und Vorschauen: haelt alles nur im Speicher. */
+/** Für Tests und Vorschauen: hält alles nur im Speicher. */
 class InMemoryProgressStore(initial: AppState = AppState()) : ProgressStore {
     private var state: AppState = initial
     private val reviews = ArrayList<ReviewEntry>()

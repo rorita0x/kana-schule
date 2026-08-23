@@ -6,8 +6,8 @@ import kotlin.random.Random
  * Neun Leitner-Boxen mit festen Intervallen. Bewusst kein SM-2 und kein FSRS:
  * das Deck ist bei 230 Items geschlossen, das Ziel ist Vollbeherrschung in
  * wenigen Wochen, und ein Intervall, das man dem Lernenden hinschreiben kann
- * („naechste Wiederholung in 3 Tagen“), ist Voraussetzung fuer eine
- * glaubwuerdige Pruefungsreif-Anzeige.
+ * („nächste Wiederholung in 3 Tagen“), ist Voraussetzung für eine
+ * glaubwürdige Prüfungsreif-Anzeige.
  *
  * Box 0 ist reine Session-Arbeit und wird nie hinausgeplant.
  */

@@ -133,7 +133,7 @@ class RomajiTest {
 
     @Test
     fun kurzeAntwortenKennenKeineTippfehler() {
-        // Bei zweibuchstabigen Antworten waere jeder Nachbar ein "Tippfehler".
+        // Bei zweibuchstabigen Antworten wäre jeder Nachbar ein "Tippfehler".
         assertIs<Verdict.Wrong>(Romaji.evaluate(kana("h.ka"), "qz"))
     }
 

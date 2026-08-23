@@ -3,8 +3,8 @@ package moe.rorita.kanaschule.kana
 /**
  * Wie eine getippte Antwort bewertet wird.
  *
- * Die Reihenfolge der Pruefung in [evaluate] ist tragend: eine Verwechslung
- * muss vor einem Tippfehler erkannt werden, sonst wird „hi“ fuer し als
+ * Die Reihenfolge der Prüfung in [evaluate] ist tragend: eine Verwechslung
+ * muss vor einem Tippfehler erkannt werden, sonst wird „hi“ für し als
  * Tippfehler verbucht statt als das, was es ist.
  */
 sealed interface Verdict {
@@ -24,13 +24,13 @@ sealed interface Verdict {
 }
 
 enum class ConfusionKind {
-    /** Optisch aehnliches Zeichen: シ mit „tsu“ beantwortet. */
+    /** Optisch ähnliches Zeichen: シ mit „tsu“ beantwortet. */
     VISUAL,
 
     /** Stimmhaftigkeit vergessen oder erfunden: が mit „ka“. */
     DAKUTEN,
 
-    /** Kleines ya/yu/yo uebersehen: きゃ mit „ki“. */
+    /** Kleines ya/yu/yo übersehen: きゃ mit „ki“. */
     YOON_BASE,
 
     /** Richtiger Konsonant, falscher Vokal: か mit „ko“. */
@@ -52,7 +52,7 @@ object Romaji {
      * „ki tte“ zu „kitte“.
      *
      * Makron-Vokale werden absichtlich nicht auf den Grundvokal reduziert:
-     * sonst waeren sākuru und sakuru nicht mehr zu unterscheiden.
+     * sonst wären sākuru und sakuru nicht mehr zu unterscheiden.
      */
     fun normalize(raw: String): String =
         nfkc(raw).lowercase().filter { it.isLetter() || it == '\'' || it == '-' }
@@ -94,7 +94,7 @@ object Romaji {
         }
 
     /**
-     * Das Zeichen, das die Eingabe tatsaechlich benennt. Zeichen derselben
+     * Das Zeichen, das die Eingabe tatsächlich benennt. Zeichen derselben
      * Schrift haben Vorrang, optische Nachbarn davon noch einmal.
      */
     private fun confusedWith(target: Kana, input: String): Kana? =

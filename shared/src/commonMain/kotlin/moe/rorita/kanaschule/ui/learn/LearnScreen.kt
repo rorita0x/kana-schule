@@ -37,7 +37,7 @@ import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 
 /**
  * Zeigt ein Zeichen zum Lernen: beide Schriften, die Romaji-Lesung, die
- * Aussprache zum Nachlesen und zum Anhoeren.
+ * Aussprache zum Nachlesen und zum Anhören.
  */
 @Composable
 fun LearnScreen(
@@ -75,7 +75,7 @@ fun LearnScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MuteToggle(muted = state.muted, onToggle = onToggleMute)
                 TextButton(onClick = onQuit) {
-                    Text(if (state.standalone) "Zurueck" else "Beenden")
+                    Text(if (state.standalone) "Zurück" else "Beenden")
                 }
             }
         }
@@ -169,7 +169,7 @@ fun LearnScreen(
                             enabled = card.hasPrevious,
                             modifier = Modifier.weight(1f).height(50.dp),
                         ) {
-                            Text("Zurueck")
+                            Text("Zurück")
                         }
                         Button(
                             onClick = onNext,
@@ -196,7 +196,7 @@ fun LearnScreen(
                             )
                             Text(
                                 text = if (state.showAll) {
-                                    "Alle Lesungen, unabhaengig vom Fortschritt"
+                                    "Alle Lesungen, unabhängig vom Fortschritt"
                                 } else {
                                     "Nur die noch nicht gelernten"
                                 },
@@ -207,7 +207,7 @@ fun LearnScreen(
                     }
 
                     Text(
-                        text = "Pfeiltasten - blaettern · Leertaste - anhoeren · Esc - zurueck",
+                        text = "Pfeiltasten - blättern · Leertaste - anhören · Esc - zurück",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -220,7 +220,7 @@ fun LearnScreen(
                         Text(if (card.isLast) "Los geht's" else "Weiter")
                     }
                     Text(
-                        text = "Enter - weiter · Leertaste - nochmal hoeren",
+                        text = "Enter - weiter · Leertaste - nochmal hören",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

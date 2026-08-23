@@ -6,7 +6,7 @@ package moe.rorita.kanaschule.ui.keyboard
  * Fehlgriffe auf dem Touchscreen.
  *
  * Die Anordnung folgt QWERTY statt dem Alphabet, damit die Muskelerinnerung
- * von der normalen Tastatur traegt.
+ * von der normalen Tastatur trägt.
  */
 object RomajiKeyLayout {
 

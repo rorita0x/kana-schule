@@ -5,8 +5,8 @@ import moe.rorita.kanaschule.store.AndroidPlatform
 
 /**
  * Die Aufnahmen liegen als Assets. Sie werden beim ersten Abspielen in den
- * Cache kopiert und von dort geoeffnet: ein Asset-Dateideskriptor funktioniert
- * nur, wenn die Datei unkomprimiert im APK liegt, und das haengt an
+ * Cache kopiert und von dort geöffnet: ein Asset-Dateideskriptor funktioniert
+ * nur, wenn die Datei unkomprimiert im APK liegt, und das hängt an
  * Verpackungsregeln, die wir hier nicht erzwingen wollen.
  */
 private class AndroidAudioPlayer : AudioPlayer {

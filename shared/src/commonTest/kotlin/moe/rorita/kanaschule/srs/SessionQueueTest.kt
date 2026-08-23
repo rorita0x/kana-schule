@@ -46,7 +46,7 @@ class SessionQueueTest {
     fun nieZweimalHintereinanderDasselbeZeichen() {
         val queue = SessionQueue(ids("a", "b"))
         queue.next()
-        // a steht jetzt wieder vorn und wuerde direkt folgen
+        // a steht jetzt wieder vorn und würde direkt folgen
         queue.requeueTypo(KanaId("a"))
         val served = drain(queue)
         for (i in 1 until served.size) {
@@ -58,7 +58,7 @@ class SessionQueueTest {
     fun keinDoppelEintragDirektNebeneinander() {
         val queue = SessionQueue(ids("a", "b", "c", "d", "e"))
         queue.requeueTypo(KanaId("b"))
-        // b liegt bereits auf Index 1, direkt an der Einfuegestelle
+        // b liegt bereits auf Index 1, direkt an der Einfügestelle
         assertEquals(listOf("a", "b", "c", "d", "e"), queue.pending.map { it.v })
     }
 

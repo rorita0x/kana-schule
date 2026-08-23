@@ -13,7 +13,7 @@ data class SessionPlan(
 )
 
 /**
- * Stellt eine Uebungssession zusammen. Rein und deterministisch: derselbe
+ * Stellt eine Übungssession zusammen. Rein und deterministisch: derselbe
  * Zufallsgenerator ergibt dieselbe Session, damit Fehlerberichte
  * reproduzierbar und der Aufbau testbar bleibt.
  */
@@ -88,9 +88,9 @@ object SessionBuilder {
     }
 
     /**
-     * Nimmt immer aus der groessten noch offenen Zeile, die nicht die vorige
-     * ist. Nur irgendeine andere Zeile zu nehmen genuegt nicht: dann bleibt
-     * regelmaessig die haeufigste Zeile bis zum Schluss uebrig und die letzten
+     * Nimmt immer aus der größten noch offenen Zeile, die nicht die vorige
+     * ist. Nur irgendeine andere Zeile zu nehmen genügt nicht: dann bleibt
+     * regelmäßig die häufigste Zeile bis zum Schluss übrig und die letzten
      * beiden Zeichen sind doch ein Paar.
      */
     private fun spreadRows(items: List<KanaId>, random: Random): MutableList<KanaId> {

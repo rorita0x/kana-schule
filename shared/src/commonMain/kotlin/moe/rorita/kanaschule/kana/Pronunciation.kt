@@ -1,12 +1,12 @@
 package moe.rorita.kanaschule.kana
 
 /**
- * Aussprachehilfe fuer deutsche Ohren. Getrennt in Konsonant, Vokal und
+ * Aussprachehilfe für deutsche Ohren. Getrennt in Konsonant, Vokal und
  * Stolperfalle, weil japanische Silben systematisch gebaut sind: wer einmal
- * weiss, wie das japanische u klingt, braucht es nicht 20 Mal zu lesen.
+ * weiß, wie das japanische u klingt, braucht es nicht 20 Mal zu lesen.
  *
  * Die Warnungen sind der eigentliche Wert. Sie stehen genau dort, wo ein
- * deutscher Sprecher zuverlaessig daneben liegt.
+ * deutscher Sprecher zuverlässig daneben liegt.
  */
 data class PronunciationHint(
     val consonant: String?,
@@ -65,9 +65,9 @@ object Pronunciation {
         Row.NYA to "n mit angehängtem j, in einer Silbe.",
         Row.HYA to "h mit angehängtem j, in einer Silbe.",
         Row.BYA to "b mit angehängtem j, in einer Silbe.",
-        Row.PYA to "p mit angehaengtem j, in einer Silbe.",
-        Row.MYA to "m mit angehaengtem j, in einer Silbe.",
-        Row.RYA to "Zungenschlag-r mit angehaengtem j, in einer Silbe.",
+        Row.PYA to "p mit angehängtem j, in einer Silbe.",
+        Row.MYA to "m mit angehängtem j, in einer Silbe.",
+        Row.RYA to "Zungenschlag-r mit angehängtem j, in einer Silbe.",
         Row.SPECIAL to null,
     )
 
@@ -83,14 +83,14 @@ object Pronunciation {
         "chi" to "Wie „tschi“, aber weicher als das deutsche „tsch“.",
         "tsu" to "Genau das „z“ aus „Zug“, dann u. Niemals „tu“.",
         "fu" to "Zwischen f und h: Lippen locker wie beim Kerzenauspusten, die " +
-            "Zaehne beruehren die Lippe nicht.",
+            "Zähne berühren die Lippe nicht.",
         "ha" to "Als Themenpartikel wird は „wa“ gesprochen, nicht „ha“.",
         "he" to "Als Richtungspartikel wird へ „e“ gesprochen, nicht „he“.",
         "ji" to "Wie „dsch“ in „Dschungel“.",
-        "n" to "Eine eigene Silbe, kein angehaengter Konsonant. Vor k und g " +
+        "n" to "Eine eigene Silbe, kein angehängter Konsonant. Vor k und g " +
             "klingt es wie „ng“ in „lang“, vor p, b und m wie „m“.",
         "wo" to "Wird als Objektpartikel gebraucht und dabei „o“ gesprochen - " +
-            "das w faellt weg.",
+            "das w fällt weg.",
         "di" to "Klingt heute identisch zu じ. Kommt fast nur in 続く vor.",
         "du" to "Klingt heute identisch zu ず.",
         "ra" to "Kein deutsches r. Die Zungenspitze tippt einmal kurz an, " +

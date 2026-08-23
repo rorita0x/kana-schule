@@ -41,11 +41,11 @@ import moe.rorita.kanaschule.ui.learn.LearnCard
 import moe.rorita.kanaschule.ui.learn.LearnState
 
 /**
- * Haelt den Lernstand und die laufende Session.
+ * Hält den Lernstand und die laufende Session.
  *
  * Der Zustand liegt in Compose-eigenen Snapshot-States statt in einem
  * StateFlow: die App hat genau einen Beobachter, und so bleibt die
- * Coroutine-Nutzung auf das beschraenkt, was sie wirklich braucht - das
+ * Coroutine-Nutzung auf das beschränkt, was sie wirklich braucht - das
  * Schreiben auf die Platte abseits des Hauptthreads.
  */
 class KanaViewModel(
@@ -71,24 +71,24 @@ class KanaViewModel(
     private var learnQueue: List<Kana> = emptyList()
     private var learnIndex: Int = 0
 
-    /** true, wenn der Lernmodus aus dem Hauptmenue kommt. */
+    /** true, wenn der Lernmodus aus dem Hauptmenü kommt. */
     private var learnStandalone: Boolean = false
     private var learnShowAll: Boolean = false
 
     /**
-     * Eigener Scope statt viewModelScope: der laeuft auf Dispatchers.Main, und
+     * Eigener Scope statt viewModelScope: der läuft auf Dispatchers.Main, und
      * den gibt es auf Compose Desktop nur mit kotlinx-coroutines-swing im
      * Klassenpfad. Genutzt wird er ausschliesslich zum Schreiben - das
-     * braucht keine Rueckmeldung an die Oberflaeche.
+     * braucht keine Rückmeldung an die Oberfläche.
      */
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     /**
-     * Geladen wird synchron. Die Datei ist wenige Dutzend Kilobyte gross und
-     * wird genau einmal gelesen; das nebenlaeufig zu tun war Hoeflichkeit
-     * ohne Nutzen und hat die Oberflaeche auf dem Desktop haengen lassen -
-     * eine Zustandsaenderung aus einem Hintergrund-Thread erreicht den
-     * Recomposer dort nicht zuverlaessig.
+     * Geladen wird synchron. Die Datei ist wenige Dutzend Kilobyte groß und
+     * wird genau einmal gelesen; das nebenläufig zu tun war Höflichkeit
+     * ohne Nutzen und hat die Oberfläche auf dem Desktop hängen lassen -
+     * eine Zustandsänderung aus einem Hintergrund-Thread erreicht den
+     * Recomposer dort nicht zuverlässig.
      */
     init {
         appState = store.load()
@@ -169,9 +169,9 @@ class KanaViewModel(
     // --------------------------------------------------------------- Lernen
 
     /**
-     * Lernmodus aus dem Hauptmenue: zum Blaettern, ohne dass danach abgefragt
+     * Lernmodus aus dem Hauptmenü: zum Blättern, ohne dass danach abgefragt
      * wird. Ohne Haken sind es die noch nicht gelernten Zeichen der
-     * freigeschalteten Gruppen - das ist das, was als Naechstes dran ist.
+     * freigeschalteten Gruppen - das ist das, was als Nächstes dran ist.
      */
     fun startLearning(showAll: Boolean = learnShowAll) {
         learnStandalone = true
@@ -191,7 +191,7 @@ class KanaViewModel(
 
     /**
      * Eine Karte je Lesung, nicht je Zeichen: die Karte zeigt ohnehin beide
-     * Schriften, sonst kaeme jedes Paar zweimal. Entschieden wird nach Slug
+     * Schriften, sonst käme jedes Paar zweimal. Entschieden wird nach Slug
      * und nicht nach der Lesung, weil じ und ぢ beide "ji" sind.
      */
     private fun learnScope(): List<Kana> {
@@ -210,7 +210,7 @@ class KanaViewModel(
         if (!learnStandalone) return
         val current = ui.learn?.card?.hiragana ?: ui.learn?.card?.katakana
         startLearning(showAll = !learnShowAll)
-        // Nach Moeglichkeit beim gerade gezeigten Zeichen bleiben.
+        // Nach Möglichkeit beim gerade gezeigten Zeichen bleiben.
         current?.let { kana ->
             val index = learnQueue.indexOfFirst { slugOf(it) == slugOf(kana) }
             if (index >= 0) {
@@ -242,7 +242,7 @@ class KanaViewModel(
         )
     }
 
-    /** Weiter zur naechsten Karte, danach beginnt das Abfragen. */
+    /** Weiter zur nächsten Karte, danach beginnt das Abfragen. */
     fun nextLearnCard() {
         if (learnIndex + 1 >= learnQueue.size) {
             if (learnStandalone) {
@@ -335,7 +335,7 @@ class KanaViewModel(
         ui = ui.copy(typed = "", feedback = null)
     }
 
-    /** Enter: bestaetigt Feedback oder gibt die Antwort ab. */
+    /** Enter: bestätigt Feedback oder gibt die Antwort ab. */
     fun submit() {
         if (ui.awaitingContinue) {
             advance()
@@ -344,7 +344,7 @@ class KanaViewModel(
         answer(ui.typed)
     }
 
-    /** Bewusstes Ueberspringen ist etwas anderes als eine falsche Antwort. */
+    /** Bewusstes Überspringen ist etwas anderes als eine falsche Antwort. */
     fun skip() {
         if (ui.awaitingContinue) return
         answer("")
@@ -387,7 +387,7 @@ class KanaViewModel(
         ui = ui.copy(
             typed = "",
             feedback = feedback,
-            // Beim Erstkontakt gibt es nichts zu bestaetigen: die Loesung stand
+            // Beim Erstkontakt gibt es nichts zu bestätigen: die Lösung stand
             // gerade noch auf der Karte.
             awaitingContinue = counted,
             asked = drill.asked,
@@ -400,9 +400,9 @@ class KanaViewModel(
     }
 
     /**
-     * Holt das naechste Zeichen. Bei richtigen Antworten ruft das der
-     * Bildschirm nach der kurzen Rueckmeldung auf - nicht die Antwortlogik
-     * selbst, sonst wird zweimal geschaltet und eine Frage uebersprungen.
+     * Holt das nächste Zeichen. Bei richtigen Antworten ruft das der
+     * Bildschirm nach der kurzen Rückmeldung auf - nicht die Antwortlogik
+     * selbst, sonst wird zweimal geschaltet und eine Frage übersprungen.
      */
     fun advance() {
         val drill = session ?: return
@@ -598,7 +598,7 @@ class KanaViewModel(
     }
 }
 
-/** Tagesschluessel als ISO-Datum, damit die Datei lesbar bleibt. */
+/** Tagesschlüssel als ISO-Datum, damit die Datei lesbar bleibt. */
 internal fun dayKey(epochDay: Long): String = epochDay.toString()
 
 private fun AppState.withDay(

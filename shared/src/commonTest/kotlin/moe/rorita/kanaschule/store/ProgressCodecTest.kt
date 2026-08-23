@@ -115,7 +115,7 @@ class ProgressCodecTest {
         assertEquals(state.settings.dailyNewLimit, state.newItemBudget(101))
 
         val nextDay = state.withNewItemsToday(3, day = 101)
-        assertEquals(3, nextDay.unlock.newItemsToday, "am neuen Tag wird neu gezaehlt")
+        assertEquals(3, nextDay.unlock.newItemsToday, "am neuen Tag wird neu gezählt")
     }
 
     @Test
@@ -155,6 +155,6 @@ class ProgressCodecTest {
             )
         }
         assertEquals(AppState.MAX_SESSIONS, state.sessions.size)
-        assertEquals(20L, state.sessions.first().startedAtMs, "die aeltesten fallen weg")
+        assertEquals(20L, state.sessions.first().startedAtMs, "die ältesten fallen weg")
     }
 }

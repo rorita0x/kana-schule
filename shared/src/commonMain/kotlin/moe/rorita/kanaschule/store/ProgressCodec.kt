@@ -32,7 +32,7 @@ object ProgressCodec {
     }
 
     /**
-     * Migriert wird auf dem rohen JsonObject, nicht ueber mitgeschleppte alte
+     * Migriert wird auf dem rohen JsonObject, nicht über mitgeschleppte alte
      * Datenklassen. Das ist das Muster, das jenseits Version 3 wartbar bleibt.
      */
     private val migrations: List<Migration> = emptyList()
@@ -46,7 +46,7 @@ object ProgressCodec {
         var element = try {
             json.parseToJsonElement(text).jsonObject
         } catch (e: Exception) {
-            return DecodeResult.Broken(e.message ?: "kein gueltiges JSON")
+            return DecodeResult.Broken(e.message ?: "kein gültiges JSON")
         }
 
         var version = element["schemaVersion"]?.jsonPrimitive?.intOrNull ?: 1

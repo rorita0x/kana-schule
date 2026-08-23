@@ -3,8 +3,8 @@ package moe.rorita.kanaschule.kana
 /**
  * Handgeschriebene Seed-Matrix. Nur Hiragana wird eingetragen; Katakana
  * entsteht mechanisch durch den Unicode-Versatz von 0x60, Basiszeichen und
- * IDs berechnet [KanaTable] daraus. Das haelt die Zahl der moeglichen
- * Tippfehler bei fuenf Tabellen statt bei 208 Zeilen.
+ * IDs berechnet [KanaTable] daraus. Das hält die Zahl der möglichen
+ * Tippfehler bei fünf Tabellen statt bei 208 Zeilen.
  */
 internal class Seed(
     val hiragana: String,
@@ -12,7 +12,7 @@ internal class Seed(
     val canonical: String,
     /** Eindeutiger Namensteil der ID, falls canonical nicht eindeutig ist (じ/ぢ). */
     val slug: String = canonical,
-    /** Weitere Hepburn-gleichwertige Schreibweisen, die keinen Hinweis ausloesen. */
+    /** Weitere Hepburn-gleichwertige Schreibweisen, die keinen Hinweis auslösen. */
     val hepburnAlt: List<String> = emptyList(),
     val kunrei: String? = null,
     /** Nur angeben, wenn die Wapuro-Form von der Kunrei-Form abweicht. */
@@ -28,11 +28,11 @@ internal class WordSeed(
     val script: Script,
     val glyph: String,
     /**
-     * Die Form, die sich mit der 22-Tasten-Romaji-Tastatur tippen laesst und
+     * Die Form, die sich mit der 22-Tasten-Romaji-Tastatur tippen lässt und
      * die Kana eins zu eins abbildet: ー wird zum verdoppelten Vokal.
      */
     val canonical: String,
-    /** Gleichwertig, loest keinen Hinweis aus - etwa die Makron-Schreibweise. */
+    /** Gleichwertig, löst keinen Hinweis aus - etwa die Makron-Schreibweise. */
     val hepburnAlt: List<String> = emptyList(),
     val kunrei: List<String> = emptyList(),
     val tolerated: List<String> = emptyList(),
@@ -174,7 +174,7 @@ internal object KanaSeed {
     )
 
     /**
-     * っ, ッ und ー haben keine eigene Lesung. Sie werden an Woertern geuebt,
+     * っ, ッ und ー haben keine eigene Lesung. Sie werden an Wörtern geübt,
      * denn das Lernziel ist die Regel, nicht das Zeichen.
      */
     val words: List<WordSeed> = listOf(
@@ -196,7 +196,7 @@ internal object KanaSeed {
         WordSeed("baggu", Script.KATAKANA, "バッグ", "baggu"),
         WordSeed("setto", Script.KATAKANA, "セット", "setto"),
 
-        // Chouonpu: ー verlaengert den Vokal. Kanonisch ist die tippbare
+        // Chouonpu: ー verlängert den Vokal. Kanonisch ist die tippbare
         // Doppelvokal-Form; die Makron-Schreibweise gilt als gleichwertig.
         WordSeed(
             "ramen", Script.KATAKANA, "ラーメン", "raamen",

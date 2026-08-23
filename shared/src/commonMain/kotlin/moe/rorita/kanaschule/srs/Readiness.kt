@@ -8,7 +8,7 @@ import moe.rorita.kanaschule.kana.KanaId
 enum class MasteryTier { LOCKED, NEW, BUILDING, SAFE, MASTERED }
 
 /**
- * Die Pruefungsreif-Zahl. Sie ist ein Versprechen an den Lernenden, deshalb
+ * Die Prüfungsreif-Zahl. Sie ist ein Versprechen an den Lernenden, deshalb
  * gehen Antwortzeit und Trefferquote in die höchste Stufe ein: Kana in acht
  * Sekunden pro Zeichen zu lesen ist kein Lesen.
  */
@@ -23,7 +23,7 @@ object Readiness {
     private const val BUILDING_BOX = 2
 
     /**
-     * Ein beherrschtes Zeichen faellt nach langer Pause nicht unter diesen
+     * Ein beherrschtes Zeichen fällt nach langer Pause nicht unter diesen
      * Wert. Der Totaleinbruch nach zwei Wochen Urlaub ist das
      * demotivierendste Verhalten, das eine Wiederholungs-App zeigen kann.
      */
@@ -31,7 +31,7 @@ object Readiness {
 
     private const val STALE_FACTOR = 0.70
 
-    /** Stufe fuer die Anzeige. LOCKED entscheidet die Unlock-Leiter, nicht diese Funktion. */
+    /** Stufe für die Anzeige. LOCKED entscheidet die Unlock-Leiter, nicht diese Funktion. */
     fun tier(state: ItemState): MasteryTier = when {
         !state.seen -> MasteryTier.NEW
         isMastered(state) -> MasteryTier.MASTERED
@@ -59,7 +59,7 @@ object Readiness {
 
     /**
      * Der Nenner ist der volle Umfang, gesperrte Zeichen eingeschlossen. Man
-     * kann nicht zu 80 Prozent hiragana-pruefungsreif sein, wenn drei Zeilen
+     * kann nicht zu 80 Prozent hiragana-prüfungsreif sein, wenn drei Zeilen
      * freigeschaltet sind.
      */
     fun percent(scope: List<Kana>, states: Map<KanaId, ItemState>, nowMs: Long): Int {

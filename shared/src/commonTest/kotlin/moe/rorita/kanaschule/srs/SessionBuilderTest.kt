@@ -47,13 +47,13 @@ class SessionBuilderTest {
 
     @Test
     fun faelligeZeichenKommenZuerstUndNachDatum() {
-        // Alle gesehen, aber unterschiedlich lange faellig.
+        // Alle gesehen, aber unterschiedlich lange fällig.
         val states = unlockedIds.mapIndexed { index, id ->
             id to seen(box = 5, dueAtMs = now - index * 1000L)
         }.toMap()
 
         val plan = build(states, newBudget = 0, targetSize = 5)
-        // Die fuenf am laengsten faelligen sind die letzten fuenf der Liste.
+        // Die fünf am längsten fälligen sind die letzten fünf der Liste.
         assertEquals(unlockedIds.takeLast(5).toSet(), plan.items.toSet())
     }
 

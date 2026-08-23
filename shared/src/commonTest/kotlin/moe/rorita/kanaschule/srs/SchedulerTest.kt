@@ -100,7 +100,7 @@ class SchedulerTest {
         var state = apply(ItemState(box = 6), Verdict.Wrong)
         assertTrue(state.relearning)
         state = apply(state, correct)
-        assertTrue(state.relearning, "einmal richtig genuegt nicht")
+        assertTrue(state.relearning, "einmal richtig genügt nicht")
         state = apply(state, correct)
         assertFalse(state.relearning)
     }

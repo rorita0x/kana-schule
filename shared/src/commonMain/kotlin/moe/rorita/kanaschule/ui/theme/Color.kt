@@ -6,8 +6,8 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * Tinte auf warmem Papier mit einem Zinnober-Akzent. Kein Material-Standard-
- * Violett: das Zeichen soll das Auffaelligste auf dem Bildschirm sein, alles
- * andere tritt zurueck.
+ * Violett: das Zeichen soll das Auffälligste auf dem Bildschirm sein, alles
+ * andere tritt zurück.
  */
 private val Paper = Color(0xFFFBF8F3)
 private val PaperRaised = Color(0xFFFFFFFF)

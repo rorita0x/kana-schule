@@ -91,7 +91,7 @@ class DrillSessionTest {
         repeat(6) {
             if (session.advance()?.id == KanaId("h.a")) seenAgain = true
         }
-        assertTrue(seenAgain, "das verpasste Zeichen muss zurueckkommen")
+        assertTrue(seenAgain, "das verpasste Zeichen muss zurückkommen")
     }
 
     @Test
@@ -110,7 +110,7 @@ class DrillSessionTest {
         assertEquals(Outcome.TYPO, result.outcome)
         assertEquals(0, session.asked, "ein Tippfehler ist keine Antwort")
         assertEquals(result.boxBefore, result.boxAfter)
-        assertTrue(session.changedStates.isEmpty(), "und aendert nichts am Lernstand")
+        assertTrue(session.changedStates.isEmpty(), "und ändert nichts am Lernstand")
     }
 
     @Test
@@ -183,7 +183,7 @@ class DrillSessionTest {
         session.submit("zzz", 1000, now)
 
         // Zielzahl erreicht, aber ein Fehler ist offen: es geht weiter.
-        assertNotNull(session.advance(), "offener Fehler verlaengert die Session")
+        assertNotNull(session.advance(), "offener Fehler verlängert die Session")
 
         session.submit("a", 1000, now)
         session.advance()
@@ -202,7 +202,7 @@ class DrillSessionTest {
             extra++
             if (extra > 20) break
         }
-        assertEquals(3, extra, "hoechstens die erlaubte Nachspielzeit")
+        assertEquals(3, extra, "höchstens die erlaubte Nachspielzeit")
     }
 
     @Test
@@ -278,7 +278,7 @@ class DrillSessionTest {
 
         assertEquals(Outcome.INTRODUCED, result.outcome)
         assertTrue(result.introduction)
-        assertEquals(0, session.asked, "kein Pruefungsversuch")
+        assertEquals(0, session.asked, "kein Prüfungsversuch")
         assertEquals(0, session.correct)
         assertEquals(1, session.introduced)
         assertEquals(1, session.answered, "verbraucht aber eine Frage")
@@ -286,7 +286,7 @@ class DrillSessionTest {
         val state = session.states.getValue(KanaId("h.a"))
         assertEquals(1, state.box)
         assertEquals(1, state.reps)
-        assertEquals(0, state.recentCount, "der Ringpuffer bleibt unberuehrt")
+        assertEquals(0, state.recentCount, "der Ringpuffer bleibt unberührt")
         assertEquals(0, state.lapses)
         assertFalse(state.relearning)
     }
@@ -321,7 +321,7 @@ class DrillSessionTest {
 
     @Test
     fun bereitsGeseheneZeichenWerdenNichtVorgestellt() {
-        // Als neu geplant, aber der Lernstand kennt es schon: keine Einfuehrung.
+        // Als neu geplant, aber der Lernstand kennt es schon: keine Einführung.
         val states = mapOf(KanaId("h.a") to ItemState(box = 3, reps = 4))
         val session = session(plan("h.a", "h.i", new = listOf("h.a")), states)
         session.start()

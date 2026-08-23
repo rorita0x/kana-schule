@@ -128,7 +128,7 @@ class UnlockTest {
         val hiragana = UnlockGroups.of(Script.HIRAGANA)
         val unlocked = hiragana.map { it.id }.toSet()
 
-        // Alle Hiragana-Gruppen offen, aber nur die halbe Menge geuebt:
+        // Alle Hiragana-Gruppen offen, aber nur die halbe Menge geübt:
         // die Katakana-Schwelle von 70 Prozent ist damit nicht erreicht.
         val half = hiragana.take(hiragana.size / 2)
         val states = statesFor(*half.toTypedArray())

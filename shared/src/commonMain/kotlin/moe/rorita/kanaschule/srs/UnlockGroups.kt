@@ -14,10 +14,10 @@ data class UnlockGroup(
 
 /**
  * Die Leiter, in der neue Zeichen freigeschaltet werden. Hiragana zuerst,
- * Zeile fuer Zeile; Katakana oeffnet, sobald Hiragana weit genug ist.
+ * Zeile für Zeile; Katakana öffnet, sobald Hiragana weit genug ist.
  *
  * Der Sinn der Leiter ist die Begrenzung: die aktive Menge bleibt jederzeit
- * klein, damit sich 230 Items nie wie 230 Items anfuehlen.
+ * klein, damit sich 230 Items nie wie 230 Items anfühlen.
  */
 object UnlockGroups {
 
@@ -46,7 +46,7 @@ object UnlockGroups {
 
     fun groupOf(id: KanaId): UnlockGroup? = groupByItem[id]
 
-    /** Vorgaengergruppe derselben Schrift, oder null bei der ersten. */
+    /** Vorgängergruppe derselben Schrift, oder null bei der ersten. */
     fun previousInScript(group: UnlockGroup): UnlockGroup? {
         val siblings = of(group.script)
         val index = siblings.indexOf(group)

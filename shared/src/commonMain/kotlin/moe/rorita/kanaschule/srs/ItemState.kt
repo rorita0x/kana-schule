@@ -12,7 +12,7 @@ enum class SessionMode { LEARN, REVIEW, CONFUSION, SPEED, EXAM }
 @Serializable
 data class ItemState(
     val box: Int = 0,
-    /** 0 bedeutet „jetzt faellig“. */
+    /** 0 bedeutet „jetzt fällig“. */
     val dueAtMs: Long = 0L,
     val firstSeenMs: Long? = null,
     val lastSeenMs: Long? = null,
@@ -22,7 +22,7 @@ data class ItemState(
     val streak: Int = 0,
     /** Richtige Antworten in Folge unter [Scheduler.FAST_MS]. */
     val fastStreak: Int = 0,
-    /** Exponentiell geglaettete Antwortzeit, alpha = 0,3. */
+    /** Exponentiell geglättete Antwortzeit, alpha = 0,3. */
     val latencyEwmaMs: Int = 0,
     /** Ringpuffer der letzten 20 Antworten, Bit 0 ist die neueste. */
     val recent: Int = 0,

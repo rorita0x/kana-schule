@@ -104,6 +104,6 @@ class ReadinessTest {
         val scope = KanaTable.byScript.getValue(Script.HIRAGANA)
         val states = scope.associate { it.id to mastered() }
         assertEquals(100, Readiness.percent(scope, states, now))
-        assertTrue(scope.size == 112, "Hiragana-Umfang inklusive Woerter: ${scope.size}")
+        assertTrue(scope.size == 112, "Hiragana-Umfang inklusive Wörter: ${scope.size}")
     }
 }

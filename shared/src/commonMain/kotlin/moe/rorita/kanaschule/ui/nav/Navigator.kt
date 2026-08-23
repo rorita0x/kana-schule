@@ -7,9 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 
 /**
- * Vier Bildschirme, keine Deeplinks, keine Argument-Serialisierung. Dafuer
+ * Vier Bildschirme, keine Deeplinks, keine Argument-Serialisierung. Dafür
  * braucht es kein Navigations-Framework - eine sealed interface und ein
- * beobachteter Stack genuegen.
+ * beobachteter Stack genügen.
  */
 sealed interface Screen {
     data object Home : Screen
@@ -31,7 +31,7 @@ class Navigator(start: Screen = Screen.Home) {
         if (stack.last() != screen) stack.add(screen)
     }
 
-    /** Ersetzt den obersten Eintrag - fuer Uebergaenge ohne Rueckweg. */
+    /** Ersetzt den obersten Eintrag - für Übergänge ohne Rückweg. */
     fun replace(screen: Screen) {
         stack[stack.lastIndex] = screen
     }

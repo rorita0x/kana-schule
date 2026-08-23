@@ -24,8 +24,8 @@ enum class Outcome {
 
     /**
      * Erste Antwort direkt nach der Vorstellungskarte. Abschreiben aus dem
-     * Kurzzeitgedaechtnis, kein Erinnern - zaehlt deshalb nicht in die
-     * Trefferquote und hebt die Box nicht ueber die erste hinaus.
+     * Kurzzeitgedächtnis, kein Erinnern - zählt deshalb nicht in die
+     * Trefferquote und hebt die Box nicht über die erste hinaus.
      */
     INTRODUCED,
 }
@@ -33,7 +33,7 @@ enum class Outcome {
 @Serializable
 data class Settings(
     val scope: ScopeSetting = ScopeSetting.HIRAGANA_FIRST,
-    /** Nicht-Hepburn wird dann neutral behandelt statt voll gezaehlt. */
+    /** Nicht-Hepburn wird dann neutral behandelt statt voll gezählt. */
     val strictHepburn: Boolean = false,
     val dailyNewLimit: Int = Unlock.MAX_NEW_ITEMS_PER_DAY,
     val reviewSessionLength: Int = SessionBuilder.TARGET_SIZE,
@@ -41,7 +41,7 @@ data class Settings(
     val onScreenKeyboard: Boolean? = null,
     /**
      * Schaltet das automatische Vorspielen im Lernmodus ab. Erreichbar im
-     * Hauptmenue, also bevor der erste Ton kommt.
+     * Hauptmenü, also bevor der erste Ton kommt.
      */
     val muteAudio: Boolean = false,
     val theme: ThemeMode = ThemeMode.SYSTEM,
@@ -60,7 +60,7 @@ data class UnlockState(
     }
 }
 
-/** Ein Tag in der Rueckschau. Wird nie gekuerzt, das sind rund 80 Byte. */
+/** Ein Tag in der Rückschau. Wird nie gekürzt, das sind rund 80 Byte. */
 @Serializable
 data class DayAgg(
     val reviews: Int = 0,
@@ -104,8 +104,8 @@ data class ReviewEntry(
 /**
  * Der gesamte gespeicherte Zustand.
  *
- * [items] enthaelt nur beruehrte Zeichen; nie gesehene sind der Standardwert.
- * Das haelt die Datei am Anfang klein und macht das Erweitern des Datensatzes
+ * [items] enthält nur berührte Zeichen; nie gesehene sind der Standardwert.
+ * Das hält die Datei am Anfang klein und macht das Erweitern des Datensatzes
  * zum Nicht-Ereignis.
  */
 @Serializable
@@ -137,8 +137,8 @@ data class AppState(
         copy(sessions = (sessions + summary).takeLast(MAX_SESSIONS))
 
     /**
-     * Zaehlt das Tagesbudget fuer neue Zeichen fort und setzt es beim
-     * Tageswechsel zurueck.
+     * Zählt das Tagesbudget für neue Zeichen fort und setzt es beim
+     * Tageswechsel zurück.
      */
     fun withNewItemsToday(count: Int, day: Long): AppState {
         val carried = if (unlock.newItemsDay == day) unlock.newItemsToday else 0

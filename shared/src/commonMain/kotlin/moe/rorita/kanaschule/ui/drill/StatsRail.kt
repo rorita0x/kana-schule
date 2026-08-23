@@ -24,7 +24,7 @@ import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 /**
  * Die Seitenleiste auf breiten Fenstern. Sie ist der eigentliche Vorteil des
  * Desktops: was auf dem Handy einen zweiten Bildschirm braucht, steht hier
- * daneben und bleibt beim Ueben sichtbar.
+ * daneben und bleibt beim Üben sichtbar.
  */
 @Composable
 fun StatsRail(
@@ -57,7 +57,7 @@ fun StatsRail(
         Metric(label = "Trefferquote", value = "${state.accuracy} %")
         Metric(label = "Serie", value = state.streak.toString())
         Metric(
-            label = "Pruefungsreif",
+            label = "Prüfungsreif",
             value = "${state.readinessNow} %",
             delta = state.readinessNow - state.readinessAtStart,
         )

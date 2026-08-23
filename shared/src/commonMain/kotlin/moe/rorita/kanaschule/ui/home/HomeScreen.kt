@@ -30,7 +30,7 @@ import moe.rorita.kanaschule.ui.drill.HomeInfo
 import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 
 /**
- * Die Startseite. Die Pruefungsreif-Zahl ist die Schlagzeile, alles andere
+ * Die Startseite. Die Prüfungsreif-Zahl ist die Schlagzeile, alles andere
  * ordnet sich darunter - das ist die Mechanik, die zum Wiederkommen bewegt.
  */
 @Composable
@@ -121,7 +121,7 @@ fun HomeScreen(
                 onClick = onDrill,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
             ) {
-                Text(text = "Ueben", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Üben", style = MaterialTheme.typography.titleMedium)
             }
 
             OutlinedButton(
@@ -131,9 +131,9 @@ fun HomeScreen(
                 Text(text = "Lernen", style = MaterialTheme.typography.titleMedium)
             }
 
-            // Der Ton-Schalter gehoert hierher: im Lernmodus spielt die
+            // Der Ton-Schalter gehört hierher: im Lernmodus spielt die
             // Aussprache automatisch, und das muss man vorher abstellen
-            // koennen, nicht erst danach.
+            // können, nicht erst danach.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -40,7 +40,7 @@ class KanaTableTest {
                 Script.KATAKANA -> 'ァ'..'ヺ'
             }
             for (char in kana.glyph) {
-                assertTrue(char in range, "${kana.id.v}: ${kana.glyph} enthaelt $char")
+                assertTrue(char in range, "${kana.id.v}: ${kana.glyph} enthält $char")
             }
         }
     }

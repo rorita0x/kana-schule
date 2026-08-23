@@ -7,9 +7,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 /**
- * Systemschrift, aber mit engeren Zeilenabstaenden und kraeftigeren Titeln als
- * der Material-Standard. Die Glyphengroesse selbst wird nicht hier festgelegt,
- * sondern vom Layout aus der verfuegbaren Flaeche berechnet.
+ * Systemschrift, aber mit engeren Zeilenabständen und kräftigeren Titeln als
+ * der Material-Standard. Die Glyphengröße selbst wird nicht hier festgelegt,
+ * sondern vom Layout aus der verfügbaren Fläche berechnet.
  */
 val KanaTypography = Typography().let { base ->
     base.copy(

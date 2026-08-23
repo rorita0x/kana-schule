@@ -1,6 +1,6 @@
 package moe.rorita.kanaschule.store
 
 /**
- * Verzeichnis fuer den Lernfortschritt. Existiert nach dem Aufruf.
+ * Verzeichnis für den Lernfortschritt. Existiert nach dem Aufruf.
  */
 expect fun appDataDir(): String

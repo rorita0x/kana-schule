@@ -21,10 +21,10 @@ sealed interface Feedback {
 
     data class Skipped(val expected: String) : Feedback
 
-    /** Neutral, zaehlt nicht - der Lernende tippt einfach nochmal. */
+    /** Neutral, zählt nicht - der Lernende tippt einfach nochmal. */
     data class Typo(val nearest: String) : Feedback
 
-    /** Erstkontakt direkt nach der Karte: eingepraegt, nicht geprueft. */
+    /** Erstkontakt direkt nach der Karte: eingeprägt, nicht geprüft. */
     data class Introduced(val expected: String, val wasCorrect: Boolean) : Feedback
 }
 
@@ -79,10 +79,10 @@ data class DrillUiState(
     val kana: Kana? = null,
     val typed: String = "",
     val feedback: Feedback? = null,
-    /** Solange gesetzt, wartet der Bildschirm auf eine Bestaetigung. */
+    /** Solange gesetzt, wartet der Bildschirm auf eine Bestätigung. */
     val awaitingContinue: Boolean = false,
     val asked: Int = 0,
-    /** Erstkontakte: zaehlen fuer den Fortschritt, nicht fuer die Quote. */
+    /** Erstkontakte: zählen für den Fortschritt, nicht für die Quote. */
     val introduced: Int = 0,
     val correct: Int = 0,
     val target: Int = 0,

@@ -2,8 +2,8 @@ package moe.rorita.kanaschule.kana
 
 /**
  * Die einzigen wirklich handgepflegten Daten: welche Zeichen sich optisch
- * aehneln und wie man sie auseinanderhaelt. Stimmhaftigkeitspaare stehen hier
- * nicht, die werden strukturell ueber das Basiszeichen erkannt.
+ * ähneln und wie man sie auseinanderhält. Stimmhaftigkeitspaare stehen hier
+ * nicht, die werden strukturell über das Basiszeichen erkannt.
  *
  * Die Paare werden beim Aufbau der Tabelle symmetrisiert, jede Kante also nur
  * einmal notiert.
@@ -26,13 +26,13 @@ internal object KanaExtras {
 
     /**
      * Was den Unterschied ausmacht, in einem Satz. Wird im Feedback und im
-     * Verwechslungs-Drill angezeigt. Schluessel ist ein sortiertes Glyphenpaar.
+     * Verwechslungs-Drill angezeigt. Schlüssel ist ein sortiertes Glyphenpaar.
      */
     val discriminators: Map<Pair<String, String>, String> = mapOf(
-        pair("シ", "ツ") to "シ hat die Striche links und oeffnet nach rechts, ツ hat sie oben.",
+        pair("シ", "ツ") to "シ hat die Striche links und öffnet nach rechts, ツ hat sie oben.",
         pair("ソ", "ン") to "ソ setzt den kurzen Strich oben an, ン unten links.",
         pair("ソ", "ノ") to "ソ hat zwei Striche, ノ nur einen.",
-        pair("ね", "れ") to "ね endet in einer Schleife, れ laeuft gerade nach rechts aus.",
+        pair("ね", "れ") to "ね endet in einer Schleife, れ läuft gerade nach rechts aus.",
         pair("ね", "わ") to "ね hat die Schleife, わ endet als offener Bogen.",
         pair("る", "ろ") to "る schliesst unten mit einer Schleife, ろ bleibt offen.",
         pair("き", "さ") to "き hat zwei Querstriche, さ nur einen.",
@@ -41,7 +41,7 @@ internal object KanaExtras {
         pair("コ", "ユ") to "コ ist oben geschlossen, ユ hat den Strich unten.",
         pair("マ", "ム") to "マ ist oben spitz, ム unten.",
         pair("レ", "ル") to "ル hat zwei Striche, レ nur einen.",
-        pair("チ", "テ") to "チ hat den schraegen Strich oben, テ einen geraden.",
+        pair("チ", "テ") to "チ hat den schrägen Strich oben, テ einen geraden.",
         pair("う", "つ") to "う hat den kurzen Strich oben, つ ist nur ein Bogen.",
     )
 

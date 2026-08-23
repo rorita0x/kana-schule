@@ -16,9 +16,9 @@ data class AnswerOutcome(
     val boxBefore: Int,
     val boxAfter: Int,
     val confusedWith: KanaId?,
-    /** Erste Antwort nach der Vorstellungskarte: zaehlt nicht als Pruefung. */
+    /** Erste Antwort nach der Vorstellungskarte: zählt nicht als Prüfung. */
     val introduction: Boolean,
-    /** Der Hinweis auf die Hepburn-Schreibweise, falls einer faellig ist. */
+    /** Der Hinweis auf die Hepburn-Schreibweise, falls einer fällig ist. */
     val hint: String?,
     /** Bei Tippfehlern und Fehlern: die kanonische Antwort zum Anzeigen. */
     val expected: String,
@@ -29,7 +29,7 @@ data class AnswerOutcome(
  * wann Schluss ist.
  *
  * Rein und ohne I/O. Die Uhr kommt von aussen, der Zufall auch - dieselbe
- * Session laesst sich damit im Test Zug fuer Zug nachspielen.
+ * Session lässt sich damit im Test Zug für Zug nachspielen.
  */
 class DrillSession(
     plan: SessionPlan,
@@ -57,7 +57,7 @@ class DrillSession(
     var asked: Int = 0
         private set
 
-    /** Erstkontakte. Zaehlen fuer die Sessionlaenge, nicht fuer die Quote. */
+    /** Erstkontakte. Zählen für die Sessionlänge, nicht für die Quote. */
     var introduced: Int = 0
         private set
 
@@ -70,7 +70,7 @@ class DrillSession(
     var demoted: Int = 0
         private set
 
-    /** Zeichen, deren Zustand sich geaendert hat - nur die muessen gespeichert werden. */
+    /** Zeichen, deren Zustand sich geändert hat - nur die müssen gespeichert werden. */
     val changedStates: Map<KanaId, ItemState>
         get() = touched.associateWith { mutableStates.getValue(it) }
 
@@ -91,7 +91,7 @@ class DrillSession(
 
     /**
      * Bewertet die Eingabe, schreibt den Lernstand fort und reiht das Zeichen
-     * bei Bedarf wieder ein. Das naechste Zeichen holt danach [advance].
+     * bei Bedarf wieder ein. Das nächste Zeichen holt danach [advance].
      */
     fun submit(typed: String, latencyMs: Int, nowMs: Long): AnswerOutcome {
         val kana = current ?: error("Keine offene Frage")
@@ -170,8 +170,8 @@ class DrillSession(
         id in newItems && before.reps == 0
 
     /**
-     * Der Erstkontakt landet in Box 1 und laesst Trefferquote, Ringpuffer und
-     * Fehlerzaehler unberuehrt. Wer ein Zeichen abschreibt, das gerade noch auf
+     * Der Erstkontakt landet in Box 1 und lässt Trefferquote, Ringpuffer und
+     * Fehlerzähler unberührt. Wer ein Zeichen abschreibt, das gerade noch auf
      * dem Bildschirm stand, hat es nicht gewusst - und hat es auch nicht
      * falsch gewusst.
      */
@@ -207,7 +207,7 @@ class DrillSession(
         )
     }
 
-    /** Naechstes Zeichen, oder null wenn die Session zu Ende ist. */
+    /** Nächstes Zeichen, oder null wenn die Session zu Ende ist. */
     fun advance(): Kana? {
         if (answered >= targetAnswers) {
             if (unsettled.isEmpty() || overtimeUsed >= overtimeLimit) {
@@ -228,7 +228,7 @@ class DrillSession(
     val medianLatencyMs: Int
         get() = if (latencies.isEmpty()) 0 else latencies.sorted()[latencies.size / 2]
 
-    /** Die schwaechsten Zeichen dieser Session, fuer die Seitenleiste. */
+    /** Die schwächsten Zeichen dieser Session, für die Seitenleiste. */
     fun weakest(limit: Int): List<Pair<KanaId, ItemState>> =
         touched.map { it to mutableStates.getValue(it) }
             .filter { it.second.reps > 0 }

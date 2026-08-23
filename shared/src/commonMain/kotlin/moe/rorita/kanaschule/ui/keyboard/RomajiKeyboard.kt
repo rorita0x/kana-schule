@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Die eigene Tastatur. Bewusst kein Systemkeyboard: das wuerde die Eingabe
- * hilfreich gross schreiben, „tu“ zu „to“ verbessern und mit seiner
- * Vorschlagsleiste die Zeitmessung verfaelschen.
+ * Die eigene Tastatur. Bewusst kein Systemkeyboard: das würde die Eingabe
+ * hilfreich groß schreiben, „tu“ zu „to“ verbessern und mit seiner
+ * Vorschlagsleiste die Zeitmessung verfälschen.
  */
 @Composable
 fun RomajiKeyboard(

@@ -5,7 +5,7 @@ import moe.rorita.kanaschule.kana.KanaTable
 import moe.rorita.kanaschule.kana.Script
 
 /**
- * Wann die naechste Gruppe aufgeht. Die Tagesgrenzen sind der wichtigste Teil:
+ * Wann die nächste Gruppe aufgeht. Die Tagesgrenzen sind der wichtigste Teil:
  * ohne sie schaltet ein euphorischer Tag-eins-Nutzer 46 Zeichen frei und
  * erstickt an Tag drei in Wiederholungen.
  */
@@ -18,7 +18,7 @@ object Unlock {
     const val MAX_NEW_ITEMS_PER_DAY = 10
     const val MAX_GROUPS_PER_DAY = 1
 
-    /** Ab dieser Hiragana-Pruefungsreife öffnet Katakana. */
+    /** Ab dieser Hiragana-Prüfungsreife öffnet Katakana. */
     const val KATAKANA_GATE_PERCENT = 70
 
     fun isMastered(group: UnlockGroup, states: Map<KanaId, ItemState>): Boolean {
@@ -30,7 +30,7 @@ object Unlock {
 
     /**
      * Die nächste freischaltbare Gruppe, oder null wenn noch nichts ansteht.
-     * Prueft nur die Lernbedingung; Tagesgrenzen entscheidet der Aufrufer,
+     * Prüft nur die Lernbedingung; Tagesgrenzen entscheidet der Aufrufer,
      * der den Kalender kennt.
      */
     fun nextGroup(
