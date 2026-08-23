@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Kana Führerschein
+GenericName=Kana-Trainer
+Comment=Hiragana und Katakana üben
+Exec=kana-schule
+Icon=kana-schule
+Categories=Education;Languages;
+Keywords=Japanisch;Hiragana;Katakana;Kana;Lernen;
+Terminal=false
+StartupNotify=true
+StartupWMClass=kana-schule

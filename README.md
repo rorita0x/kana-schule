@@ -250,7 +250,20 @@ Voraussetzungen: JDK 17 oder neuer, für Android ein Android SDK mit Platform
 ./gradlew :shared:check               # 164 Tests
 ```
 
-Release-Artefakte:
+Release-Artefakte in einem Durchgang:
+
+```bash
+./release.sh                 # Linux (AppImage, App-Image, JAR) und Android-APK
+./release.sh linux           # nur Linux
+./release.sh android         # nur APK
+./release.sh --no-appimage   # ohne AppImage
+```
+
+Das Skript baut, prüft die APK-Signatur und gibt am Ende die Pfade aus, dazu
+den fertigen `adb install`-Befehl. Für das AppImage lädt es beim ersten Lauf
+`appimagetool` in den Cache (`~/.cache/kana-schule/`), nicht ins Projekt.
+
+Einzeln geht es auch:
 
 ```bash
 ./gradlew :androidApp:assembleRelease                # APK
@@ -258,12 +271,24 @@ Release-Artefakte:
 ./gradlew :shared:packageReleaseUberJarForCurrentOS  # JAR, braucht ein JVM
 ```
 
+| Artefakt | Pfad | Größe |
+|---|---|---|
+| AppImage | `build/appimage/Kana-Fuehrerschein-x86_64.AppImage` | ~64 MB |
+| App-Image | `shared/build/compose/binaries/main-release/app/kana-schule/bin/kana-schule` | ~143 MB |
+| Uber-JAR | `shared/build/compose/jars/kana-schule-linux-x64-*-release.jar` | ~40 MB |
+| APK | `androidApp/build/outputs/apk/release/androidApp-release.apk` | ~11 MB |
+
+AppImage und App-Image bringen eine eigene JRE mit und brauchen kein
+installiertes Java; die JAR braucht eins. Symbol und Desktop-Eintrag für das
+AppImage liegen unter `packaging/`.
+
 Die Release-APK wird signiert, wenn eine `keystore.properties` im
 Projektwurzelverzeichnis liegt (`storeFile`, `storePassword`, `keyAlias`,
 `keyPassword`). Fehlt sie, bleibt der Build unsigniert statt fehlzuschlagen.
 Die Datei und Schlüsseldateien sind aus der Versionskontrolle ausgenommen.
 
-Kein `.deb`: jpackage braucht dafür `dpkg-deb`, das es auf Arch nicht gibt.
+Kein `.deb`: jpackage braucht dafür `dpkg-deb`, das es auf Arch nicht gibt -
+deshalb das AppImage.
 
 ### Wo der Lernstand liegt
 
