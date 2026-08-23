@@ -47,8 +47,10 @@ fun DrillScreen(
     val kana = state.kana ?: return
 
     // Nach einer richtigen Antwort kurz stehen lassen, dann weiter.
-    LaunchedEffect(state.answered, state.feedback) {
-        if (state.feedback is Feedback.Correct || state.feedback is Feedback.Introduced) {
+    LaunchedEffect(state.answered, state.feedback, state.awaitingContinue) {
+        val sat = state.feedback is Feedback.Correct ||
+            (state.feedback is Feedback.Introduced && state.feedback.wasCorrect)
+        if (sat && !state.awaitingContinue) {
             delay(CORRECT_FLASH_MS)
             onAdvance()
         }

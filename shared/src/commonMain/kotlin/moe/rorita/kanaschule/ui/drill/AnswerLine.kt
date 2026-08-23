@@ -45,7 +45,7 @@ fun AnswerLine(
     val colors = LocalFeedbackColors.current
     val tint = when (feedback) {
         is Feedback.Correct -> colors.correct
-        is Feedback.Introduced -> colors.neutral
+        is Feedback.Introduced -> if (feedback.wasCorrect) colors.correct else colors.wrong
         is Feedback.Wrong, is Feedback.Skipped -> colors.wrong
         is Feedback.Typo -> colors.neutral
         null -> MaterialTheme.colorScheme.onBackground
@@ -121,17 +121,43 @@ private fun FeedbackText(feedback: Feedback?) {
             }
         }
 
+        // Das Hauptsignal ist Farbe und Wort, nicht ein Satz: in einer halben
+        // Sekunde liest niemand eine Erklärung. Dass der Erstkontakt nicht
+        // zählt, steht klein darunter und muss nicht gelesen werden.
         is Feedback.Introduced -> Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
+            if (feedback.wasCorrect) {
+                Text(
+                    text = "richtig",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colors.correct,
+                )
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = feedback.typed.ifEmpty { "-" },
+                        style = MaterialTheme.typography.titleMedium,
+                        color = colors.wrong,
+                    )
+                    Text(
+                        text = "→",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = feedback.expected,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = colors.correct,
+                    )
+                }
+            }
             Text(
-                text = feedback.expected,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = "Erstkontakt - zählt nicht in die Quote",
+                text = "erstes Mal - zählt noch nicht",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,

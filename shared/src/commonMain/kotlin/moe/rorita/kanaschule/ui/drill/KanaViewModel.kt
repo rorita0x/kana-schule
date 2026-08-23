@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import moe.rorita.kanaschule.kana.ConfusionKind
 import moe.rorita.kanaschule.kana.Kana
@@ -85,6 +86,14 @@ class KanaViewModel(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     /**
+     * Abspielwünsche laufen ueber einen einzigen Verbraucher, damit sich zwei
+     * nie ins Gehege kommen. CONFLATED heißt: bei mehreren Wünschen gewinnt
+     * der neueste, statt dass einer verworfen wird - wer schnell blättert,
+     * hört das Zeichen, auf dem er stehen bleibt.
+     */
+    private val audioRequests = Channel<String>(Channel.CONFLATED)
+
+    /**
      * Geladen wird synchron. Die Datei ist wenige Dutzend Kilobyte groß und
      * wird genau einmal gelesen; das nebenläufig zu tun war Höflichkeit
      * ohne Nutzen und hat die Oberfläche auf dem Desktop hängen lassen -
@@ -92,6 +101,9 @@ class KanaViewModel(
      * Recomposer dort nicht zuverlässig.
      */
     init {
+        scope.launch {
+            for (name in audioRequests) audio.play(name)
+        }
         appState = store.load()
         theme = appState.settings.theme
         ui = DrillUiState(
@@ -267,8 +279,14 @@ class KanaViewModel(
         ui = ui.copy(learn = null, home = homeInfo())
     }
 
+    /**
+     * Abspielen gehört nicht auf den Oberflächen-Thread: eine Tonleitung zu
+     * öffnen dauert und kann blockieren, und aus einem Klick-Handler heraus
+     * friert das die App ein.
+     */
     fun playCurrentAudio() {
-        ui.learn?.card?.audioName?.let(audio::play)
+        val name = ui.learn?.card?.audioName ?: return
+        audioRequests.trySend(name)
     }
 
     /**
@@ -380,13 +398,15 @@ class KanaViewModel(
         if (counted) {
             missed += MissedEntry(kana, Romaji.normalize(typed), outcome.expected)
         }
+        // Stehen bleiben muss alles, was nicht gesessen hat - auch beim
+        // Erstkontakt, denn 500 Millisekunden reichen nicht, um eine Lösung zu
+        // lesen. Ein richtiger Erstkontakt läuft dagegen einfach durch.
+        val sat = outcome.verdict is Verdict.Correct
 
         ui = ui.copy(
             typed = "",
             feedback = feedback,
-            // Beim Erstkontakt gibt es nichts zu bestätigen: die Lösung stand
-            // gerade noch auf der Karte.
-            awaitingContinue = counted,
+            awaitingContinue = !sat,
             asked = drill.asked,
             introduced = drill.introduced,
             correct = drill.correct,
@@ -547,6 +567,7 @@ class KanaViewModel(
             Outcome.CORRECT -> Feedback.Correct(outcome.hint)
             Outcome.INTRODUCED -> Feedback.Introduced(
                 expected = outcome.expected,
+                typed = Romaji.normalize(typed),
                 wasCorrect = outcome.verdict is Verdict.Correct,
             )
             Outcome.SKIPPED -> Feedback.Skipped(outcome.expected)

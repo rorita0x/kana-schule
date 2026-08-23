@@ -38,7 +38,11 @@ sealed interface Feedback {
     data class Typo(val nearest: String) : Feedback
 
     /** Erstkontakt direkt nach der Karte: eingeprägt, nicht geprüft. */
-    data class Introduced(val expected: String, val wasCorrect: Boolean) : Feedback
+    data class Introduced(
+        val expected: String,
+        val typed: String,
+        val wasCorrect: Boolean,
+    ) : Feedback
 }
 
 @Immutable
