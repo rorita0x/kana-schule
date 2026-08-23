@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -112,10 +113,12 @@ private fun StackedLayout(
             GlyphCard(
                 kana = state.kana!!,
                 isNew = state.isNewItem,
+                // Nachgeben statt feste Hoehe: bei niedrigem Fenster schrumpft
+                // die Karte, damit Antwortzeile und Tastatur sichtbar bleiben.
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f, fill = false)
-                    .height(GLYPH_CARD_COMPACT.dp),
+                    .weight(1f)
+                    .heightIn(max = GLYPH_CARD_COMPACT.dp),
             )
             AnswerLine(
                 typed = state.typed,
@@ -236,7 +239,10 @@ private fun ExpandedLayout(
                     scale = 0.34f,
                     minSize = 140.dp,
                     maxSize = 240.dp,
-                    modifier = Modifier.fillMaxWidth().height(GLYPH_CARD_EXPANDED.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false)
+                        .heightIn(max = GLYPH_CARD_EXPANDED.dp),
                 )
                 AnswerLine(
                     typed = state.typed,
@@ -352,7 +358,7 @@ private fun SkipColumn(state: DrillUiState, onSkip: () -> Unit, onSubmit: () -> 
 }
 
 private const val CORRECT_FLASH_MS = 520L
-private const val GLYPH_CARD_COMPACT = 260
+private const val GLYPH_CARD_COMPACT = 280
 private const val GLYPH_CARD_EXPANDED = 320
 private const val EXPANDED_CONTENT_MAX = 720
 private const val RAIL_WIDTH = 320

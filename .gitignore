@@ -9,6 +9,11 @@ build/
 # Lokale Konfiguration (Pfad zum Android SDK)
 local.properties
 
+# Signierschluessel und Passwoerter
+keystore.properties
+*.jks
+*.keystore
+
 # IntelliJ / Android Studio
 .idea/
 *.iml

@@ -54,6 +54,14 @@ kotlin {
 compose.desktop.application {
     mainClass = "moe.rorita.kanaschule.MainKt"
 
+    // Die ProGuard-Task des Compose-Plugins ist mit Gradle 9.7 unvertraeglich
+    // ("getStandardOutput(...) must not be null"). Verkleinern waere ohnehin
+    // Keep-Regel-Arbeit fuer Compose und kotlinx-serialization - ein kaputtes
+    // Release ist schlimmer als ein grosses.
+    buildTypes.release.proguard {
+        isEnabled.set(false)
+    }
+
     nativeDistributions {
         targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
         packageName = "kana-schule"
