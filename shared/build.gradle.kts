@@ -22,6 +22,12 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     sourceSets {
+        // Android und Desktop sind beides JVM-Ziele: alles Datei-I/O liegt einmal
+        // in jvmShared, expect/actual bleibt auf das Verzeichnis beschraenkt.
+        val jvmSharedMain = create("jvmSharedMain") { dependsOn(commonMain.get()) }
+        androidMain.get().dependsOn(jvmSharedMain)
+        getByName("desktopMain").dependsOn(jvmSharedMain)
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
