@@ -18,6 +18,10 @@ object Unlock {
     const val MAX_NEW_ITEMS_PER_DAY = 10
     const val MAX_GROUPS_PER_DAY = 1
 
+    /** Ab diesem Wert gilt die Tagesgrenze als abgeschaltet. */
+    const val GROUPS_PER_DAY_UNLIMITED = 99
+    const val NEW_ITEMS_UNLIMITED = 999
+
     /** Ab dieser Hiragana-Prüfungsreife öffnet Katakana. */
     const val KATAKANA_GATE_PERCENT = 70
 

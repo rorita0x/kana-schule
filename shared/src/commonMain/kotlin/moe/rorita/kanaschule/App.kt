@@ -38,6 +38,7 @@ import moe.rorita.kanaschule.ui.keyboard.RomajiKeyLayout
 import moe.rorita.kanaschule.ui.layout.LocalWindowClass
 import moe.rorita.kanaschule.ui.layout.WindowClass
 import moe.rorita.kanaschule.ui.learn.LearnScreen
+import moe.rorita.kanaschule.ui.settings.SettingsScreen
 import moe.rorita.kanaschule.ui.theme.KanaTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -75,6 +76,15 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                                 CircularProgressIndicator()
                             }
 
+                            state.settingsOpen -> SettingsScreen(
+                                settings = state.settings,
+                                groups = state.groups,
+                                onChange = viewModel::updateSettings,
+                                onUnlockThrough = viewModel::unlockThrough,
+                                onLockFrom = viewModel::lockFrom,
+                                onClose = viewModel::closeSettings,
+                            )
+
                             state.result != null -> SummaryScreen(
                                 result = state.result,
                                 onDone = viewModel::leaveSummary,
@@ -102,7 +112,8 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 
                             state.kana != null -> DrillScreen(
                                 state = state,
-                                showKeyboard = prefersOnScreenKeyboard,
+                                showKeyboard = state.settings.onScreenKeyboard
+                                    ?: prefersOnScreenKeyboard,
                                 onKey = viewModel::type,
                                 onBackspace = viewModel::backspace,
                                 onSubmit = viewModel::submit,
@@ -117,6 +128,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                                 onDrill = viewModel::startSession,
                                 onLearn = { viewModel.startLearning() },
                                 onToggleMute = viewModel::toggleMute,
+                                onSettings = viewModel::openSettings,
                             )
                         }
                     }

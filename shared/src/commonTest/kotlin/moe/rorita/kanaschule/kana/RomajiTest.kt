@@ -164,4 +164,34 @@ class RomajiTest {
             }
         }
     }
+
+    @Test
+    fun strengesHepburnMachtAusKunreiEinenBeinaheTreffer() {
+        val kana = kana("h.shi")
+        assertIs<Verdict.Correct>(Romaji.evaluate(kana, "si", strictHepburn = false))
+
+        val streng = assertIs<Verdict.Typo>(Romaji.evaluate(kana, "si", strictHepburn = true))
+        assertEquals("shi", streng.nearest)
+    }
+
+    @Test
+    fun strengesHepburnLaesstHepburnUnberuehrt() {
+        val verdict = assertIs<Verdict.Correct>(
+            Romaji.evaluate(kana("h.shi"), "shi", strictHepburn = true),
+        )
+        assertEquals(RomajiSystem.HEPBURN, verdict.system)
+        assertNull(verdict.hint)
+    }
+
+    @Test
+    fun strengesHepburnAendertNichtsAnFehlern() {
+        assertIs<Verdict.Confused>(Romaji.evaluate(kana("h.shi"), "hi", strictHepburn = true))
+        assertIs<Verdict.Skipped>(Romaji.evaluate(kana("h.shi"), "", strictHepburn = true))
+    }
+
+    @Test
+    fun woBleibtAuchStrengRichtig() {
+        // „o“ ist bei を als gleichwertige Hepburn-Form eingetragen.
+        assertIs<Verdict.Correct>(Romaji.evaluate(kana("h.wo"), "o", strictHepburn = true))
+    }
 }

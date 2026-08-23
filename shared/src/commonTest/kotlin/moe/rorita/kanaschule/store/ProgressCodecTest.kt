@@ -8,6 +8,7 @@ import kotlin.test.assertTrue
 import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.srs.ItemState
 import moe.rorita.kanaschule.srs.SessionMode
+import moe.rorita.kanaschule.srs.Unlock
 
 class ProgressCodecTest {
 
@@ -156,5 +157,89 @@ class ProgressCodecTest {
         }
         assertEquals(AppState.MAX_SESSIONS, state.sessions.size)
         assertEquals(20L, state.sessions.first().startedAtMs, "die ältesten fallen weg")
+    }
+
+    @Test
+    fun gruppenGrenzeProTagIstEinstellbar() {
+        val einePro = AppState()
+        assertTrue(einePro.canUnlockToday(100))
+        val nachEiner = einePro.withUnlockedGroup("H_KA", day = 100)
+        assertTrue(!nachEiner.canUnlockToday(100), "eine pro Tag ist die Voreinstellung")
+
+        val dreiPro = nachEiner.copy(settings = nachEiner.settings.copy(groupsPerDay = 3))
+        assertTrue(dreiPro.canUnlockToday(100))
+        val nachZwei = dreiPro.withUnlockedGroup("H_SA", day = 100)
+        val nachDrei = nachZwei.withUnlockedGroup("H_TA", day = 100)
+        assertTrue(!nachDrei.canUnlockToday(100), "nach drei ist Schluss")
+
+        val ohneGrenze = nachDrei.copy(
+            settings = nachDrei.settings.copy(groupsPerDay = Unlock.GROUPS_PER_DAY_UNLIMITED),
+        )
+        assertTrue(ohneGrenze.canUnlockToday(100))
+    }
+
+    @Test
+    fun vorspulenSchaltetAllesBisZurGruppeFrei() {
+        val state = AppState().withUnlockedThrough("H_TA")
+        assertEquals(
+            listOf("H_A", "H_KA", "H_SA", "H_TA"),
+            state.unlock.unlockedGroups,
+        )
+    }
+
+    @Test
+    fun vorspulenBehaeltBereitsOffeneGruppen() {
+        val weit = AppState().withUnlockedThrough("H_MA")
+        val zurueckGespult = weit.withUnlockedThrough("H_KA")
+        assertTrue(
+            "H_MA" in zurueckGespult.unlock.unlockedGroups,
+            "Vorspulen nimmt nichts weg: ${zurueckGespult.unlock.unlockedGroups}",
+        )
+    }
+
+    @Test
+    fun vorspulenIgnoriertUnbekannteGruppen() {
+        val state = AppState()
+        assertEquals(state, state.withUnlockedThrough("GIBTS_NICHT"))
+    }
+
+    @Test
+    fun sperrenNimmtGruppenWiederWeg() {
+        val state = AppState().withUnlockedThrough("H_TA").withLockedFrom("H_SA")
+        assertEquals(listOf("H_A", "H_KA"), state.unlock.unlockedGroups)
+    }
+
+    @Test
+    fun dieErsteGruppeLaesstSichNichtSperren() {
+        val state = AppState().withUnlockedThrough("H_KA")
+        assertEquals(state, state.withLockedFrom("H_A"))
+    }
+
+    @Test
+    fun einstellungenLaufenDurchDenRundlauf() {
+        val angepasst = sample.copy(
+            settings = Settings(
+                dailyNewLimit = 20,
+                groupsPerDay = Unlock.GROUPS_PER_DAY_UNLIMITED,
+                reviewSessionLength = 40,
+                onScreenKeyboard = true,
+                muteAudio = true,
+                strictHepburn = true,
+                theme = ThemeMode.LIGHT,
+            ),
+        )
+        val decoded = assertIs<DecodeResult.Ok>(
+            ProgressCodec.decode(ProgressCodec.encode(angepasst)),
+        )
+        assertEquals(angepasst.settings, decoded.state.settings)
+    }
+
+    @Test
+    fun alteDateienOhneNeueFelderLadenMitStandardwerten() {
+        val alt = """{"schemaVersion":1,"createdAtMs":7,"settings":{"strictHepburn":true}}"""
+        val decoded = assertIs<DecodeResult.Ok>(ProgressCodec.decode(alt))
+        assertTrue(decoded.state.settings.strictHepburn)
+        assertEquals(Unlock.MAX_GROUPS_PER_DAY, decoded.state.settings.groupsPerDay)
+        assertEquals(false, decoded.state.settings.muteAudio)
     }
 }

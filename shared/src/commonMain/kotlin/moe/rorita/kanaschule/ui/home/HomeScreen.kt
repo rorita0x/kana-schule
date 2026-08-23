@@ -14,6 +14,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +41,7 @@ fun HomeScreen(
     onDrill: () -> Unit,
     onLearn: () -> Unit,
     onToggleMute: () -> Unit,
+    onSettings: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -158,6 +160,13 @@ fun HomeScreen(
                     )
                 }
                 Switch(checked = !muted, onCheckedChange = { onToggleMute() })
+            }
+
+            TextButton(
+                onClick = onSettings,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Einstellungen")
             }
 
             info.loadProblem?.let {

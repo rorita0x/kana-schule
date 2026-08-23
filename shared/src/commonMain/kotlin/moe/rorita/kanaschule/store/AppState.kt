@@ -36,6 +36,12 @@ data class Settings(
     /** Nicht-Hepburn wird dann neutral behandelt statt voll gezählt. */
     val strictHepburn: Boolean = false,
     val dailyNewLimit: Int = Unlock.MAX_NEW_ITEMS_PER_DAY,
+    /**
+     * Wie viele Gruppen pro Tag von selbst aufgehen duerfen. Wer schon Kana
+     * kennt, soll nicht vier Tage warten muessen - über die Einstellungen
+     * lässt sich das anheben oder ganz abschalten.
+     */
+    val groupsPerDay: Int = Unlock.MAX_GROUPS_PER_DAY,
     val reviewSessionLength: Int = SessionBuilder.TARGET_SIZE,
     /** null bedeutet: was die Plattform vorgibt. */
     val onScreenKeyboard: Boolean? = null,
@@ -50,8 +56,10 @@ data class Settings(
 @Serializable
 data class UnlockState(
     val unlockedGroups: List<String> = listOf(FIRST_GROUP),
-    /** Tag der letzten Freischaltung, begrenzt auf eine Gruppe pro Tag. */
+    /** Tag der letzten automatischen Freischaltung. */
     val lastUnlockDay: Long? = null,
+    /** Gruppen, die an diesem Tag von selbst aufgegangen sind. */
+    val groupsToday: Int = 0,
     val newItemsToday: Int = 0,
     val newItemsDay: Long? = null,
 ) {
@@ -150,18 +158,47 @@ data class AppState(
         return (settings.dailyNewLimit - used).coerceAtLeast(0)
     }
 
-    fun canUnlockToday(day: Long): Boolean = unlock.lastUnlockDay != day
+    fun canUnlockToday(day: Long): Boolean {
+        if (settings.groupsPerDay >= Unlock.GROUPS_PER_DAY_UNLIMITED) return true
+        if (unlock.lastUnlockDay != day) return true
+        return unlock.groupsToday < settings.groupsPerDay
+    }
 
     fun withUnlockedGroup(groupId: String, day: Long): AppState =
         copy(
             unlock = unlock.copy(
                 unlockedGroups = unlock.unlockedGroups + groupId,
                 lastUnlockDay = day,
+                groupsToday = if (unlock.lastUnlockDay == day) unlock.groupsToday + 1 else 1,
             ),
         )
 
+    /**
+     * Schaltet alles bis zu dieser Gruppe frei, ohne Rücksicht auf Meisterung
+     * und Tagesgrenze. Bewusste Handlung des Nutzers: wer schon bis か kommt,
+     * soll nicht bei あ anfangen müssen.
+     */
+    fun withUnlockedThrough(groupId: String): AppState {
+        val ordered = UnlockGroups.ordered
+        val index = ordered.indexOfFirst { it.id == groupId }
+        if (index < 0) return this
+        val wanted = ordered.take(index + 1).map { it.id }
+        val merged = ordered.map { it.id }.filter { it in wanted || it in unlock.unlockedGroups }
+        return copy(unlock = unlock.copy(unlockedGroups = merged))
+    }
+
+    /** Nimmt Gruppen wieder weg, die erste bleibt immer. */
+    fun withLockedFrom(groupId: String): AppState {
+        val ordered = UnlockGroups.ordered
+        val index = ordered.indexOfFirst { it.id == groupId }
+        if (index <= 0) return this
+        val kept = ordered.take(index).map { it.id }
+        return copy(unlock = unlock.copy(unlockedGroups = kept.ifEmpty { listOf(FIRST_GROUP) }))
+    }
+
     companion object {
         const val MAX_SESSIONS = 100
+        private const val FIRST_GROUP = UnlockState.FIRST_GROUP
 
         fun fresh(nowMs: Long): AppState = AppState(createdAtMs = nowMs)
     }

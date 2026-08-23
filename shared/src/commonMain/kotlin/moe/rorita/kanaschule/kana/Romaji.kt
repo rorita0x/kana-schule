@@ -57,11 +57,19 @@ object Romaji {
     fun normalize(raw: String): String =
         nfkc(raw).lowercase().filter { it.isLetter() || it == '\'' || it == '-' }
 
-    fun evaluate(target: Kana, raw: String): Verdict {
+    /**
+     * [strictHepburn] macht aus einer richtigen Kunrei- oder Eingabe-Form einen
+     * Beinahe-Treffer: neutral für die Box, sofort neu gefragt. Nie ein
+     * Fehler - wer „si“ tippt, kennt し.
+     */
+    fun evaluate(target: Kana, raw: String, strictHepburn: Boolean = false): Verdict {
         val input = normalize(raw)
         if (input.isEmpty()) return Verdict.Skipped
 
         target.systemOf(input)?.let { system ->
+            if (strictHepburn && system != RomajiSystem.HEPBURN) {
+                return Verdict.Typo(target.canonical)
+            }
             return Verdict.Correct(system, hintFor(target, system, input))
         }
 

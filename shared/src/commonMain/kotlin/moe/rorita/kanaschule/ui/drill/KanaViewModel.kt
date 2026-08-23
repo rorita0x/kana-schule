@@ -31,6 +31,7 @@ import moe.rorita.kanaschule.store.DayAgg
 import moe.rorita.kanaschule.store.Outcome
 import moe.rorita.kanaschule.store.ProgressStore
 import moe.rorita.kanaschule.store.ReviewEntry
+import moe.rorita.kanaschule.store.Settings
 import moe.rorita.kanaschule.store.SessionSummary
 import moe.rorita.kanaschule.store.ThemeMode
 import moe.rorita.kanaschule.store.currentTimeMs
@@ -97,6 +98,7 @@ class KanaViewModel(
             loading = false,
             home = homeInfo(),
             muted = appState.settings.muteAudio,
+            settings = appState.settings,
         )
     }
 
@@ -113,7 +115,9 @@ class KanaViewModel(
 
         unlockedThisSession = maybeUnlock(day)
 
-        val budget = minOf(SessionBuilder.NEW_MAX, appState.newItemBudget(day))
+        // Mehr als eine Handvoll neuer Zeichen ertränkt eine Runde, auch wenn
+        // das Tagesbudget mehr erlaubt.
+        val budget = minOf(NEW_PER_SESSION_MAX, appState.newItemBudget(day))
         val seed = day * 31 + appState.sessions.size
         val plan = SessionBuilder.review(
             unlockedGroups = appState.unlockedGroups,
@@ -136,6 +140,7 @@ class KanaViewModel(
             initialStates = appState.states,
             random = Random(seed + 1),
             targetAnswers = appState.settings.reviewSessionLength,
+            strictHepburn = appState.settings.strictHepburn,
         )
         session = drill
         sessionStartMs = now
@@ -220,15 +225,7 @@ class KanaViewModel(
         }
     }
 
-    fun toggleMute() {
-        val muted = !appState.settings.muteAudio
-        appState = appState.copy(settings = appState.settings.copy(muteAudio = muted))
-        persist(null)
-        ui = ui.copy(
-            muted = muted,
-            learn = ui.learn?.copy(muted = muted),
-        )
-    }
+    fun toggleMute() = updateSettings { it.copy(muteAudio = !it.muteAudio) }
 
     private fun showLearnCard() {
         ui = ui.copy(
@@ -487,6 +484,62 @@ class KanaViewModel(
         ui = ui.copy(result = null, home = homeInfo())
     }
 
+    // ----------------------------------------------------------- Einstellungen
+
+    fun openSettings() {
+        ui = ui.copy(settingsOpen = true, settings = appState.settings, groups = groupInfos())
+    }
+
+    fun closeSettings() {
+        ui = ui.copy(settingsOpen = false, home = homeInfo())
+    }
+
+    fun updateSettings(change: (Settings) -> Settings) {
+        val settings = change(appState.settings)
+        appState = appState.copy(settings = settings)
+        theme = settings.theme
+        persist(null)
+        ui = ui.copy(
+            settings = settings,
+            muted = settings.muteAudio,
+            learn = ui.learn?.copy(muted = settings.muteAudio),
+            home = homeInfo(),
+        )
+    }
+
+    /**
+     * Alles bis zu dieser Gruppe aufmachen. Wer schon bis か kommt, soll nicht
+     * bei あ anfangen müssen - und auch nicht vier Tage auf die Freischaltung
+     * warten.
+     */
+    fun unlockThrough(groupId: String) {
+        appState = appState.withUnlockedThrough(groupId)
+        persist(null)
+        ui = ui.copy(groups = groupInfos(), home = homeInfo())
+    }
+
+    fun lockFrom(groupId: String) {
+        appState = appState.withLockedFrom(groupId)
+        persist(null)
+        ui = ui.copy(groups = groupInfos(), home = homeInfo())
+    }
+
+    private fun groupInfos(): List<GroupInfo> {
+        val unlocked = appState.unlockedGroups
+        val states = appState.states
+        return UnlockGroups.ordered.map { group ->
+            GroupInfo(
+                id = group.id,
+                labelDe = group.labelDe,
+                scriptDe = if (group.script == Script.HIRAGANA) "Hiragana" else "Katakana",
+                itemCount = group.itemIds.size,
+                unlocked = group.id in unlocked,
+                seenCount = group.itemIds.count { appState.stateOf(it).seen },
+                mastered = Unlock.isMastered(group, states),
+            )
+        }
+    }
+
     // ------------------------------------------------------------ Ableitungen
 
     private fun feedbackFor(outcome: moe.rorita.kanaschule.srs.AnswerOutcome, typed: String): Feedback =
@@ -593,6 +646,9 @@ class KanaViewModel(
 
     companion object {
         const val MAX_INPUT = 12
+
+        /** Obergrenze für neue Zeichen in einer einzelnen Runde. */
+        const val NEW_PER_SESSION_MAX = 6
         const val WEAKEST_COUNT = 8
         private const val MAX_LATENCY_MS = 120_000L
     }

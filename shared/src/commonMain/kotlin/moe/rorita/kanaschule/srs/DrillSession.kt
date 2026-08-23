@@ -38,6 +38,8 @@ class DrillSession(
     private val targetAnswers: Int = SessionBuilder.TARGET_SIZE,
     /** Nachspielzeit, um offene Fehler noch festzusetzen. */
     private val overtimeLimit: Int = DEFAULT_OVERTIME,
+    /** Nur Hepburn als volle Antwort zählen. */
+    private val strictHepburn: Boolean = false,
 ) {
 
     private val queue = SessionQueue(plan.items)
@@ -96,7 +98,7 @@ class DrillSession(
     fun submit(typed: String, latencyMs: Int, nowMs: Long): AnswerOutcome {
         val kana = current ?: error("Keine offene Frage")
         val before = stateOf(kana.id)
-        val verdict = Romaji.evaluate(kana, typed)
+        val verdict = Romaji.evaluate(kana, typed, strictHepburn)
 
         if (verdict is Verdict.Typo && typoRetries < MAX_TYPO_RETRIES) {
             typoRetries++

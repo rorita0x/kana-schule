@@ -3,7 +3,20 @@ package moe.rorita.kanaschule.ui.drill
 import androidx.compose.runtime.Immutable
 import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.KanaId
+import moe.rorita.kanaschule.store.Settings
 import moe.rorita.kanaschule.ui.learn.LearnState
+
+/** Eine Gruppe der Freischaltleiter, wie sie in den Einstellungen erscheint. */
+@Immutable
+data class GroupInfo(
+    val id: String,
+    val labelDe: String,
+    val scriptDe: String,
+    val itemCount: Int,
+    val unlocked: Boolean,
+    val seenCount: Int,
+    val mastered: Boolean,
+)
 
 /** Was nach einer Antwort angezeigt wird. */
 @Immutable
@@ -74,6 +87,10 @@ data class DrillUiState(
     val home: HomeInfo = HomeInfo(),
     /** Automatisches Vorspielen im Lernmodus abgeschaltet. */
     val muted: Boolean = false,
+    val settings: Settings = Settings(),
+    val settingsOpen: Boolean = false,
+    /** Freischaltstand für den Einstellungs-Bildschirm. */
+    val groups: List<GroupInfo> = emptyList(),
     /** Gesetzt, solange Zeichen vorgestellt werden. */
     val learn: LearnState? = null,
     val kana: Kana? = null,
