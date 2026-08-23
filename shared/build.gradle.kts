@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.material3)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
         }
         commonTest.dependencies {
             implementation(kotlin("test"))
