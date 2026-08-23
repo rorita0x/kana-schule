@@ -16,7 +16,7 @@ Drill im breiten Fenster (Zwei-Spalten), Lernkarte, Einstellungen.
 
 | Startseite | Üben (Handy) | Lernen |
 |---|---|---|
-| _Screenshot folgt_ | _Screenshot folgt_ | _Screenshot folgt_ |
+| <img width="548" height="920" alt="image" src="https://github.com/user-attachments/assets/970ff6a4-fc95-46e4-84d8-6078195e9752" /> | _Screenshot folgt_ | <img width="548" height="920" alt="image" src="https://github.com/user-attachments/assets/7336be75-4541-4006-a36a-b4abb0725e0e" /> |
 
 | Üben (Desktop, 16:9) | Einstellungen |
 |---|---|
