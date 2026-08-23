@@ -40,6 +40,7 @@ import moe.rorita.kanaschule.ui.layout.WindowClass
 import moe.rorita.kanaschule.ui.learn.LearnScreen
 import moe.rorita.kanaschule.ui.settings.SettingsScreen
 import moe.rorita.kanaschule.ui.theme.KanaTheme
+import moe.rorita.kanaschule.ui.keyboard.SystemKeyboardSink
 import moe.rorita.kanaschule.ui.nav.PlatformBackHandler
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -53,6 +54,12 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
     PlatformBackHandler(enabled = !state.loading && !state.atHome) {
         viewModel.goBack()
     }
+
+    val onScreenKeyboard = state.settings.onScreenKeyboard ?: prefersOnScreenKeyboard
+
+    // Wer die eigene Tastatur abschaltet, will auf dem Handy die des Systems -
+    // sonst gibt es überhaupt keine Möglichkeit zu tippen.
+    val systemKeyboard = prefersOnScreenKeyboard && !onScreenKeyboard && state.kana != null
 
     KanaTheme(mode = viewModel.theme) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -121,8 +128,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 
                             state.kana != null -> DrillScreen(
                                 state = state,
-                                showKeyboard = state.settings.onScreenKeyboard
-                                    ?: prefersOnScreenKeyboard,
+                                showKeyboard = onScreenKeyboard,
                                 onKey = viewModel::type,
                                 onBackspace = viewModel::backspace,
                                 onSubmit = viewModel::submit,
@@ -141,6 +147,13 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                                 onSettings = viewModel::openSettings,
                             )
                         }
+
+                        SystemKeyboardSink(
+                            active = systemKeyboard,
+                            typed = state.typed,
+                            onAnswer = viewModel::setAnswer,
+                            onSubmit = viewModel::submit,
+                        )
                     }
                 }
             }
@@ -150,9 +163,11 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
     // Der Fokus muss nach jedem Fragenwechsel zurück auf die Wurzel, sonst
     // verschluckt der Desktop die nächste Eingabe. Erst einen Frame abwarten:
     // vor der ersten Platzierung ist der Fokusknoten noch nicht bereit.
-    LaunchedEffect(state.kana, state.learn, state.result, state.loading) {
+    LaunchedEffect(state.kana, state.learn, state.result, state.loading, systemKeyboard) {
         withFrameNanos { }
-        runCatching { focus.requestFocus() }
+        // Ausser wenn die Tastatur des Systems dran ist: dann gehört der Fokus
+        // der Eingabesenke, und ein Griff danach würde die Tastatur einklappen.
+        if (!systemKeyboard) runCatching { focus.requestFocus() }
     }
 }
 

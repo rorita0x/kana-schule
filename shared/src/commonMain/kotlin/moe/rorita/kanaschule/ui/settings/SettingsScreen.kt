@@ -189,7 +189,9 @@ fun SettingsScreen(
                     )
                     ChoiceRow(
                         label = "Bildschirmtastatur",
-                        description = "Auf dem Handy nötig, am Rechner überflüssig.",
+                        description = "Automatisch heisst: eigene Tastatur auf dem Handy, " +
+                            "physische am Rechner. Bei \u201Enie\u201C übernimmt auf dem Handy " +
+                            "die Tastatur des Systems.",
                         options = listOf(null, true, false),
                         selected = settings.onScreenKeyboard,
                         labelOf = {

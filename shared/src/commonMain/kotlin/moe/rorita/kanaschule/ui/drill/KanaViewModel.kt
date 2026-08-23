@@ -41,6 +41,7 @@ import moe.rorita.kanaschule.audio.AudioPlayer
 import moe.rorita.kanaschule.audio.createAudioPlayer
 import moe.rorita.kanaschule.ui.learn.LearnCard
 import moe.rorita.kanaschule.ui.learn.LearnState
+import moe.rorita.kanaschule.ui.keyboard.RomajiKeyLayout
 
 /**
  * Hält den Lernstand und die laufende Session.
@@ -389,6 +390,18 @@ class KanaViewModel(
     fun backspace() {
         if (ui.awaitingContinue || ui.typed.isEmpty()) return
         ui = ui.copy(typed = ui.typed.dropLast(1), feedback = null)
+    }
+
+    /**
+     * Die Tastatur des Systems liefert den ganzen Text, nicht einzelne Tasten.
+     * Gefiltert wird hier und nicht dort: das Feld ist vollständig von diesem
+     * Zustand gesteuert, also gewinnt diese Filterung gegen jede Autokorrektur.
+     */
+    fun setAnswer(text: String) {
+        if (ui.awaitingContinue || ui.kana == null) return
+        val cleaned = text.lowercase().filter(RomajiKeyLayout::accepts).take(MAX_INPUT)
+        if (cleaned == ui.typed) return
+        ui = ui.copy(typed = cleaned, feedback = null)
     }
 
     fun clearInput() {
