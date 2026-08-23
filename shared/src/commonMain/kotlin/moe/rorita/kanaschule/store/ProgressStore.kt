@@ -20,6 +20,9 @@ interface ProgressStore {
     /** Die letzten [limit] Antworten, aelteste zuerst. */
     fun readReviews(limit: Int = DEFAULT_REVIEW_LIMIT): List<ReviewEntry>
 
+    /** Was beim letzten Laden schiefging - fuer eine Meldung im UI. */
+    val lastLoadProblem: String? get() = null
+
     companion object {
         const val DEFAULT_REVIEW_LIMIT = 5000
     }

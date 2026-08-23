@@ -27,8 +27,7 @@ class FileProgressStore(
     private val backupFile: Path = dir.resolve("state.json.bak")
     private val reviewLog: Path = dir.resolve("reviews.jsonl")
 
-    /** Was beim letzten Laden schiefging - fuer eine Meldung im UI. */
-    var lastLoadProblem: String? = null
+    override var lastLoadProblem: String? = null
         private set
 
     override fun load(): AppState {
