@@ -61,7 +61,7 @@ class SessionBuilderTest {
     fun nochNichtFaelligeZeichenKommenNurAlsAuffuellung() {
         val states = unlockedIds.associateWith { seen(box = 8, dueAtMs = now + 999_999) }
         val plan = build(states, newBudget = 0, targetSize = 4)
-        assertEquals(4, plan.items.size, "auffuellen statt leere Session")
+        assertEquals(4, plan.items.size, "auffüllen statt leere Session")
     }
 
     @Test

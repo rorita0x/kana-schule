@@ -90,7 +90,7 @@ object Romaji {
             RomajiSystem.WAPURO ->
                 "Hepburn schreibt „${target.canonical}“ - „$input“ ist die Eingabe-Schreibweise."
             RomajiSystem.TOLERATED ->
-                "Hepburn schreibt „${target.canonical}“ - „$input“ gilt als ungewoehnlich."
+                "Hepburn schreibt „${target.canonical}“ - „$input“ gilt als ungewöhnlich."
         }
 
     /**

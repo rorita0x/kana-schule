@@ -9,7 +9,7 @@ enum class MasteryTier { LOCKED, NEW, BUILDING, SAFE, MASTERED }
 
 /**
  * Die Pruefungsreif-Zahl. Sie ist ein Versprechen an den Lernenden, deshalb
- * gehen Antwortzeit und Trefferquote in die hoechste Stufe ein: Kana in acht
+ * gehen Antwortzeit und Trefferquote in die höchste Stufe ein: Kana in acht
  * Sekunden pro Zeichen zu lesen ist kein Lesen.
  */
 object Readiness {

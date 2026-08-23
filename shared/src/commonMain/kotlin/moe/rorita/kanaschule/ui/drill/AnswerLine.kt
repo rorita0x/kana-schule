@@ -131,7 +131,7 @@ private fun FeedbackText(feedback: Feedback?) {
                 color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
-                text = "Erstkontakt - zaehlt nicht in die Quote",
+                text = "Erstkontakt - zählt nicht in die Quote",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,

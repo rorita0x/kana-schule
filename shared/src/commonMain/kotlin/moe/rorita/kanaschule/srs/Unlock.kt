@@ -18,7 +18,7 @@ object Unlock {
     const val MAX_NEW_ITEMS_PER_DAY = 10
     const val MAX_GROUPS_PER_DAY = 1
 
-    /** Ab dieser Hiragana-Pruefungsreife oeffnet Katakana. */
+    /** Ab dieser Hiragana-Pruefungsreife öffnet Katakana. */
     const val KATAKANA_GATE_PERCENT = 70
 
     fun isMastered(group: UnlockGroup, states: Map<KanaId, ItemState>): Boolean {
@@ -29,7 +29,7 @@ object Unlock {
     }
 
     /**
-     * Die naechste freischaltbare Gruppe, oder null wenn noch nichts ansteht.
+     * Die nächste freischaltbare Gruppe, oder null wenn noch nichts ansteht.
      * Prueft nur die Lernbedingung; Tagesgrenzen entscheidet der Aufrufer,
      * der den Kalender kennt.
      */

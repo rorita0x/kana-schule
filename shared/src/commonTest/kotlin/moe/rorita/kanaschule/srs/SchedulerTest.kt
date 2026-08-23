@@ -109,7 +109,7 @@ class SchedulerTest {
     fun leechAbSechsFehlernUndSchlechterQuote() {
         var state = ItemState()
         repeat(5) { state = apply(state, Verdict.Wrong) }
-        assertFalse(state.leech, "fuenf Fehler sind noch kein Leech")
+        assertFalse(state.leech, "fünf Fehler sind noch kein Leech")
         state = apply(state, Verdict.Wrong)
         assertTrue(state.leech)
     }

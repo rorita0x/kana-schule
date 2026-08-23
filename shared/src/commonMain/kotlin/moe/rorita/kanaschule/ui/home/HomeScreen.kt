@@ -51,7 +51,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Text(
-                text = "Kana-Schule",
+                text = "Kana Führerschein",
                 style = MaterialTheme.typography.headlineMedium,
             )
 
@@ -66,7 +66,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "Pruefungsreif",
+                        text = "Prüfungsreif",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -104,7 +104,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth().padding(18.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    InfoRow("Jetzt faellig", "${info.dueNow}")
+                    InfoRow("Jetzt fällig", "${info.dueNow}")
                     HorizontalDivider()
                     InfoRow("Freigeschaltet", "${info.unlockedItems} von ${info.totalItems}")
                     InfoRow("Aktuelle Gruppe", info.currentGroupLabel.ifEmpty { "-" })

@@ -65,7 +65,7 @@ fun StatsRail(
         if (state.weakest.isNotEmpty()) {
             HorizontalDivider()
             Text(
-                text = "Schwaechste Zeichen",
+                text = "Schwächste Zeichen",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

@@ -3,7 +3,7 @@
 
     <application
         android:name=".KanaApp"
-        android:label="Kana-Schule"
+        android:label="Kana Führerschein"
         android:allowBackup="true"
         android:supportsRtl="false">
 
