@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Ohne eigenes Thema setzt Android seine Standard-Titelleiste darüber und
+      schreibt android:label hinein - im Menü stünde "Kana Führerschein" dann
+      zweimal. Die App zeichnet ihre Oberfläche selbst, sie braucht keine.
+
+      windowBackground ist die Farbe, die zwischen Fenster und erstem Bild
+      steht. Sie muss dem Papierton des Themes entsprechen, sonst blitzt beim
+      Starten eine fremde Fläche auf.
+    -->
+    <style name="Theme.KanaSchule" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+    <color name="window_background">#FBF8F3</color>
+</resources>
