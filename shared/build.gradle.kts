@@ -40,6 +40,11 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
         }
+        // Die Audiodateien liegen genau einmal unter shared/media und werden
+        // von beiden Modulen als Ressourcenverzeichnis eingebunden. Der
+        // KMP-Android-Library-Plugin verdrahtet androidMain/resources nicht.
+        getByName("desktopMain").resources.srcDir("media")
+
         getByName("desktopMain").dependencies {
             implementation(compose.desktop.currentOs)
         }

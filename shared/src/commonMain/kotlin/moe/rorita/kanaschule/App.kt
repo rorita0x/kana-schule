@@ -37,6 +37,7 @@ import moe.rorita.kanaschule.ui.home.SummaryScreen
 import moe.rorita.kanaschule.ui.keyboard.RomajiKeyLayout
 import moe.rorita.kanaschule.ui.layout.LocalWindowClass
 import moe.rorita.kanaschule.ui.layout.WindowClass
+import moe.rorita.kanaschule.ui.learn.LearnScreen
 import moe.rorita.kanaschule.ui.theme.KanaTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -83,6 +84,13 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                                 },
                             )
 
+                            state.learn != null -> LearnScreen(
+                                card = state.learn,
+                                onPlay = viewModel::playCurrentAudio,
+                                onNext = viewModel::nextLearnCard,
+                                onQuit = viewModel::abandonSession,
+                            )
+
                             state.kana != null -> DrillScreen(
                                 state = state,
                                 showKeyboard = prefersOnScreenKeyboard,
@@ -108,7 +116,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
     // Der Fokus muss nach jedem Fragenwechsel zurueck auf die Wurzel, sonst
     // verschluckt der Desktop die naechste Eingabe. Erst einen Frame abwarten:
     // vor der ersten Platzierung ist der Fokusknoten noch nicht bereit.
-    LaunchedEffect(state.kana, state.result, state.loading) {
+    LaunchedEffect(state.kana, state.learn, state.result, state.loading) {
         withFrameNanos { }
         runCatching { focus.requestFocus() }
     }
@@ -121,6 +129,24 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 @OptIn(ExperimentalComposeUiApi::class)
 private fun handleKey(event: KeyEvent, viewModel: KanaViewModel): Boolean {
     if (event.type != KeyEventType.KeyDown) return false
+
+    // Beim Vorstellen neuer Zeichen gibt es nichts zu tippen: Enter blaettert
+    // weiter, Leertaste spielt die Aussprache noch einmal.
+    if (viewModel.ui.learn != null) {
+        return when (event.key) {
+            Key.Enter, Key.NumPadEnter -> {
+                viewModel.nextLearnCard()
+                true
+            }
+
+            Key.Spacebar -> {
+                viewModel.playCurrentAudio()
+                true
+            }
+
+            else -> false
+        }
+    }
 
     return when (event.key) {
         Key.Backspace -> {

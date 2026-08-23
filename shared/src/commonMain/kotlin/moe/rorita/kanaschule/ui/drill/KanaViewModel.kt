@@ -15,6 +15,7 @@ import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.KanaExtras
 import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.kana.KanaTable
+import moe.rorita.kanaschule.kana.Pronunciation
 import moe.rorita.kanaschule.kana.Romaji
 import moe.rorita.kanaschule.kana.Script
 import moe.rorita.kanaschule.kana.Verdict
@@ -34,6 +35,9 @@ import moe.rorita.kanaschule.store.SessionSummary
 import moe.rorita.kanaschule.store.ThemeMode
 import moe.rorita.kanaschule.store.currentTimeMs
 import moe.rorita.kanaschule.store.epochDayOf
+import moe.rorita.kanaschule.audio.AudioPlayer
+import moe.rorita.kanaschule.audio.createAudioPlayer
+import moe.rorita.kanaschule.ui.learn.LearnCard
 
 /**
  * Haelt den Lernstand und die laufende Session.
@@ -60,6 +64,11 @@ class KanaViewModel(
     private var sessionStartMs: Long = 0L
     private var unlockedThisSession: String? = null
     private val missed = ArrayList<MissedEntry>()
+    private val audio: AudioPlayer = createAudioPlayer()
+
+    /** Neue Zeichen, die vor dem Abfragen noch vorgestellt werden. */
+    private var learnQueue: List<Kana> = emptyList()
+    private var learnIndex: Int = 0
 
     /**
      * Eigener Scope statt viewModelScope: der laeuft auf Dispatchers.Main, und
@@ -83,6 +92,7 @@ class KanaViewModel(
     }
 
     override fun onCleared() {
+        audio.release()
         scope.cancel()
     }
 
@@ -123,11 +133,12 @@ class KanaViewModel(
         missed.clear()
 
         val readiness = readinessAll()
-        val first = drill.start()
-        questionStartMs = now
+        learnQueue = plan.newItems.map(KanaTable::require)
+        learnIndex = 0
 
         ui = ui.copy(
-            kana = first,
+            learn = null,
+            kana = null,
             typed = "",
             feedback = null,
             awaitingContinue = false,
@@ -138,9 +149,67 @@ class KanaViewModel(
             readinessAtStart = readiness,
             readinessNow = readiness,
             weakest = emptyList(),
-            isNewItem = first != null && first.id in drill.newItems,
+            isNewItem = false,
             result = null,
         )
+
+        if (learnQueue.isEmpty()) beginDrill() else showLearnCard()
+    }
+
+    // --------------------------------------------------------------- Lernen
+
+    private fun showLearnCard() {
+        ui = ui.copy(learn = cardFor(learnQueue[learnIndex]), kana = null)
+    }
+
+    /** Weiter zur naechsten Vorstellungskarte, danach beginnt das Abfragen. */
+    fun nextLearnCard() {
+        learnIndex++
+        if (learnIndex >= learnQueue.size) {
+            ui = ui.copy(learn = null)
+            beginDrill()
+        } else {
+            showLearnCard()
+        }
+    }
+
+    fun playCurrentAudio() {
+        ui.learn?.audioName?.let(audio::play)
+    }
+
+    /**
+     * Beide Schriften auf eine Karte: し und シ sind dieselbe Lesung, und die
+     * Verbindung einmal gesehen zu haben kostet nichts.
+     */
+    private fun cardFor(kana: Kana): LearnCard {
+        val partner = kana.partnerId?.let(KanaTable::require)
+        val hiragana = listOfNotNull(kana, partner).firstOrNull { it.script == Script.HIRAGANA }
+        val katakana = listOfNotNull(kana, partner).firstOrNull { it.script == Script.KATAKANA }
+        return LearnCard(
+            hiragana = hiragana,
+            katakana = katakana,
+            romaji = kana.canonical,
+            hint = Pronunciation.of(kana),
+            audioName = Pronunciation.audioName(kana),
+            noteDe = kana.noteDe,
+            index = learnIndex,
+            total = learnQueue.size,
+        )
+    }
+
+    private fun beginDrill() {
+        val drill = session ?: return
+        val first = drill.start()
+        questionStartMs = clock()
+        ui = ui.copy(
+            learn = null,
+            kana = first,
+            typed = "",
+            feedback = null,
+            awaitingContinue = false,
+            isNewItem = first != null && first.id in drill.newItems,
+        )
+        if (first == null) finish(drill)
     }
 
     private fun maybeUnlock(day: Long): String? {

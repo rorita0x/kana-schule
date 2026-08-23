@@ -3,6 +3,7 @@ package moe.rorita.kanaschule.ui.drill
 import androidx.compose.runtime.Immutable
 import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.KanaId
+import moe.rorita.kanaschule.ui.learn.LearnCard
 
 /** Was nach einer Antwort angezeigt wird. */
 @Immutable
@@ -68,6 +69,8 @@ data class HomeInfo(
 data class DrillUiState(
     val loading: Boolean = true,
     val home: HomeInfo = HomeInfo(),
+    /** Gesetzt, solange neue Zeichen vorgestellt werden. */
+    val learn: LearnCard? = null,
     val kana: Kana? = null,
     val typed: String = "",
     val feedback: Feedback? = null,

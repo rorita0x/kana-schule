@@ -15,6 +15,10 @@ android {
         versionName = "0.1.0"
     }
 
+    // Dieselben Dateien wie beim Desktop-Ziel, nur als Assets: AGP 9 packt
+    // Java-Ressourcen nicht mehr ins APK, Assets schon.
+    sourceSets.getByName("main").assets.directories.add("../shared/media")
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
