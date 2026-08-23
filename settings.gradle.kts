@@ -16,4 +16,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "kana-schule"
 
-include(":composeApp")
+include(":shared")
+include(":androidApp")

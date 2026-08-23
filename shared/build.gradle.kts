@@ -3,10 +3,19 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.androidKmpLibrary)
 }
 
 kotlin {
     jvmToolchain(17)
+
+    // AGP 9 erlaubt com.android.application nicht mehr im KMP-Modul, deshalb ist
+    // das Android-Target hier eine Bibliothek; das APK baut :androidApp.
+    android {
+        namespace = "moe.rorita.kanaschule.shared"
+        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        minSdk = libs.versions.androidMinSdk.get().toInt()
+    }
 
     jvm("desktop")
 
