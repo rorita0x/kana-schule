@@ -46,7 +46,7 @@ fun StatsRail(
                 modifier = Modifier.fillMaxWidth().height(6.dp),
             )
             Text(
-                text = "${state.asked} von ${state.target}",
+                text = "${state.answered} von ${state.target}",
                 style = MetricTextStyle,
                 color = MaterialTheme.colorScheme.onSurface,
             )

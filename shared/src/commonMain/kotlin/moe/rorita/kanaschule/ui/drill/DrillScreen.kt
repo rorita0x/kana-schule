@@ -46,8 +46,8 @@ fun DrillScreen(
     val kana = state.kana ?: return
 
     // Nach einer richtigen Antwort kurz stehen lassen, dann weiter.
-    LaunchedEffect(state.asked, state.feedback) {
-        if (state.feedback is Feedback.Correct) {
+    LaunchedEffect(state.answered, state.feedback) {
+        if (state.feedback is Feedback.Correct || state.feedback is Feedback.Introduced) {
             delay(CORRECT_FLASH_MS)
             onAdvance()
         }
@@ -299,7 +299,7 @@ private fun DrillHeader(state: DrillUiState, onQuit: () -> Unit) {
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 Text(
-                    text = "${state.asked}/${state.target}",
+                    text = "${state.answered}/${state.target}",
                     style = MetricTextStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

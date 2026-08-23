@@ -45,6 +45,7 @@ fun AnswerLine(
     val colors = LocalFeedbackColors.current
     val tint = when (feedback) {
         is Feedback.Correct -> colors.correct
+        is Feedback.Introduced -> colors.neutral
         is Feedback.Wrong, is Feedback.Skipped -> colors.wrong
         is Feedback.Typo -> colors.neutral
         null -> MaterialTheme.colorScheme.onBackground
@@ -118,6 +119,23 @@ private fun FeedbackText(feedback: Feedback?) {
                     textAlign = TextAlign.Center,
                 )
             }
+        }
+
+        is Feedback.Introduced -> Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = feedback.expected,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = "Erstkontakt - zaehlt nicht in die Quote",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
         }
 
         is Feedback.Typo -> Text(

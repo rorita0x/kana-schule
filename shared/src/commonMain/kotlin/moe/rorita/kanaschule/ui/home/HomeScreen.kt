@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +36,10 @@ import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 @Composable
 fun HomeScreen(
     info: HomeInfo,
-    onStart: () -> Unit,
+    muted: Boolean,
+    onDrill: () -> Unit,
+    onLearn: () -> Unit,
+    onToggleMute: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -112,10 +118,46 @@ fun HomeScreen(
             }
 
             Button(
-                onClick = onStart,
+                onClick = onDrill,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
             ) {
                 Text(text = "Ueben", style = MaterialTheme.typography.titleMedium)
+            }
+
+            OutlinedButton(
+                onClick = onLearn,
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+            ) {
+                Text(text = "Lernen", style = MaterialTheme.typography.titleMedium)
+            }
+
+            // Der Ton-Schalter gehoert hierher: im Lernmodus spielt die
+            // Aussprache automatisch, und das muss man vorher abstellen
+            // koennen, nicht erst danach.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onToggleMute)
+                    .padding(vertical = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column {
+                    Text(
+                        text = "Aussprache automatisch",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = if (muted) {
+                            "Aus - nur auf Knopfdruck"
+                        } else {
+                            "An - spielt beim Anzeigen"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Switch(checked = !muted, onCheckedChange = { onToggleMute() })
             }
 
             info.loadProblem?.let {

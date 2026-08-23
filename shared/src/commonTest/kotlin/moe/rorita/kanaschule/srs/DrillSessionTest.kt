@@ -267,4 +267,66 @@ class DrillSessionTest {
         assertEquals(now, session.states.getValue(KanaId("h.a")).dueAtMs)
         assertFalse(session.states.getValue(KanaId("h.i")).relearning)
     }
+
+    // ----------------------------------------------------------- Erstkontakt
+
+    @Test
+    fun erstkontaktZaehltNichtInDieQuote() {
+        val session = session(plan("h.a", "h.i", new = listOf("h.a")))
+        session.start()
+        val result = session.submit("a", 1000, now)
+
+        assertEquals(Outcome.INTRODUCED, result.outcome)
+        assertTrue(result.introduction)
+        assertEquals(0, session.asked, "kein Pruefungsversuch")
+        assertEquals(0, session.correct)
+        assertEquals(1, session.introduced)
+        assertEquals(1, session.answered, "verbraucht aber eine Frage")
+
+        val state = session.states.getValue(KanaId("h.a"))
+        assertEquals(1, state.box)
+        assertEquals(1, state.reps)
+        assertEquals(0, state.recentCount, "der Ringpuffer bleibt unberuehrt")
+        assertEquals(0, state.lapses)
+        assertFalse(state.relearning)
+    }
+
+    @Test
+    fun falscherErstkontaktIstAuchKeinFehler() {
+        val session = session(plan("h.a", "h.i", "h.u", new = listOf("h.a")))
+        session.start()
+        val result = session.submit("zzz", 1000, now)
+
+        assertEquals(Outcome.INTRODUCED, result.outcome)
+        assertEquals(0, session.demoted)
+        val state = session.states.getValue(KanaId("h.a"))
+        assertEquals(1, state.box, "landet trotzdem in Box 1")
+        assertEquals(0, state.lapses)
+    }
+
+    @Test
+    fun abDemZweitenKontaktZaehltAlles() {
+        val session = session(plan("h.a", "h.i", "h.a", new = listOf("h.a")))
+        session.start()
+        session.submit("a", 1000, now)
+        session.advance()
+        session.submit("i", 1000, now)
+        session.advance()
+
+        assertEquals(KanaId("h.a"), session.current?.id)
+        val second = session.submit("zzz", 1000, now)
+        assertEquals(Outcome.WRONG, second.outcome, "jetzt ist es eine echte Abfrage")
+        assertEquals(1, session.states.getValue(KanaId("h.a")).lapses)
+    }
+
+    @Test
+    fun bereitsGeseheneZeichenWerdenNichtVorgestellt() {
+        // Als neu geplant, aber der Lernstand kennt es schon: keine Einfuehrung.
+        val states = mapOf(KanaId("h.a") to ItemState(box = 3, reps = 4))
+        val session = session(plan("h.a", "h.i", new = listOf("h.a")), states)
+        session.start()
+        assertEquals(Outcome.CORRECT, session.submit("a", 1000, now).outcome)
+        assertEquals(1, session.asked)
+        assertEquals(0, session.introduced)
+    }
 }

@@ -15,7 +15,20 @@ enum class ScopeSetting { HIRAGANA_FIRST, HIRAGANA_ONLY, KATAKANA_ONLY, BOTH }
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 @Serializable
-enum class Outcome { CORRECT, TYPO, CONFUSED, WRONG, SKIPPED }
+enum class Outcome {
+    CORRECT,
+    TYPO,
+    CONFUSED,
+    WRONG,
+    SKIPPED,
+
+    /**
+     * Erste Antwort direkt nach der Vorstellungskarte. Abschreiben aus dem
+     * Kurzzeitgedaechtnis, kein Erinnern - zaehlt deshalb nicht in die
+     * Trefferquote und hebt die Box nicht ueber die erste hinaus.
+     */
+    INTRODUCED,
+}
 
 @Serializable
 data class Settings(
@@ -26,6 +39,11 @@ data class Settings(
     val reviewSessionLength: Int = SessionBuilder.TARGET_SIZE,
     /** null bedeutet: was die Plattform vorgibt. */
     val onScreenKeyboard: Boolean? = null,
+    /**
+     * Schaltet das automatische Vorspielen im Lernmodus ab. Erreichbar im
+     * Hauptmenue, also bevor der erste Ton kommt.
+     */
+    val muteAudio: Boolean = false,
     val theme: ThemeMode = ThemeMode.SYSTEM,
 )
 

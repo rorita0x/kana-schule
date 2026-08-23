@@ -85,10 +85,19 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                             )
 
                             state.learn != null -> LearnScreen(
-                                card = state.learn,
+                                state = state.learn,
                                 onPlay = viewModel::playCurrentAudio,
                                 onNext = viewModel::nextLearnCard,
-                                onQuit = viewModel::abandonSession,
+                                onPrevious = viewModel::previousLearnCard,
+                                onToggleMute = viewModel::toggleMute,
+                                onToggleShowAll = viewModel::toggleShowAll,
+                                onQuit = {
+                                    if (state.learn.standalone) {
+                                        viewModel.leaveLearning()
+                                    } else {
+                                        viewModel.abandonSession()
+                                    }
+                                },
                             )
 
                             state.kana != null -> DrillScreen(
@@ -104,7 +113,10 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 
                             else -> HomeScreen(
                                 info = state.home,
-                                onStart = viewModel::startSession,
+                                muted = state.muted,
+                                onDrill = viewModel::startSession,
+                                onLearn = { viewModel.startLearning() },
+                                onToggleMute = viewModel::toggleMute,
                             )
                         }
                     }
@@ -132,15 +144,26 @@ private fun handleKey(event: KeyEvent, viewModel: KanaViewModel): Boolean {
 
     // Beim Vorstellen neuer Zeichen gibt es nichts zu tippen: Enter blaettert
     // weiter, Leertaste spielt die Aussprache noch einmal.
-    if (viewModel.ui.learn != null) {
+    val learn = viewModel.ui.learn
+    if (learn != null) {
         return when (event.key) {
-            Key.Enter, Key.NumPadEnter -> {
+            Key.Enter, Key.NumPadEnter, Key.DirectionRight -> {
                 viewModel.nextLearnCard()
+                true
+            }
+
+            Key.DirectionLeft -> {
+                viewModel.previousLearnCard()
                 true
             }
 
             Key.Spacebar -> {
                 viewModel.playCurrentAudio()
+                true
+            }
+
+            Key.Escape -> {
+                if (learn.standalone) viewModel.leaveLearning() else viewModel.abandonSession()
                 true
             }
 

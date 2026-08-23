@@ -3,7 +3,7 @@ package moe.rorita.kanaschule.ui.drill
 import androidx.compose.runtime.Immutable
 import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.KanaId
-import moe.rorita.kanaschule.ui.learn.LearnCard
+import moe.rorita.kanaschule.ui.learn.LearnState
 
 /** Was nach einer Antwort angezeigt wird. */
 @Immutable
@@ -23,6 +23,9 @@ sealed interface Feedback {
 
     /** Neutral, zaehlt nicht - der Lernende tippt einfach nochmal. */
     data class Typo(val nearest: String) : Feedback
+
+    /** Erstkontakt direkt nach der Karte: eingepraegt, nicht geprueft. */
+    data class Introduced(val expected: String, val wasCorrect: Boolean) : Feedback
 }
 
 @Immutable
@@ -69,14 +72,18 @@ data class HomeInfo(
 data class DrillUiState(
     val loading: Boolean = true,
     val home: HomeInfo = HomeInfo(),
-    /** Gesetzt, solange neue Zeichen vorgestellt werden. */
-    val learn: LearnCard? = null,
+    /** Automatisches Vorspielen im Lernmodus abgeschaltet. */
+    val muted: Boolean = false,
+    /** Gesetzt, solange Zeichen vorgestellt werden. */
+    val learn: LearnState? = null,
     val kana: Kana? = null,
     val typed: String = "",
     val feedback: Feedback? = null,
     /** Solange gesetzt, wartet der Bildschirm auf eine Bestaetigung. */
     val awaitingContinue: Boolean = false,
     val asked: Int = 0,
+    /** Erstkontakte: zaehlen fuer den Fortschritt, nicht fuer die Quote. */
+    val introduced: Int = 0,
     val correct: Int = 0,
     val target: Int = 0,
     val streak: Int = 0,
@@ -86,9 +93,13 @@ data class DrillUiState(
     val isNewItem: Boolean = false,
     val result: SessionResult? = null,
 ) {
-    val progress: Float
-        get() = if (target == 0) 0f else (asked.toFloat() / target).coerceIn(0f, 1f)
+    /** Verbrauchte Fragen, Erstkontakte eingeschlossen. */
+    val answered: Int get() = asked + introduced
 
+    val progress: Float
+        get() = if (target == 0) 0f else (answered.toFloat() / target).coerceIn(0f, 1f)
+
+    /** Nur echte Abfragen - der Erstkontakt war Abschreiben. */
     val accuracy: Int
         get() = if (asked == 0) 0 else (100.0 * correct / asked).toInt()
 }

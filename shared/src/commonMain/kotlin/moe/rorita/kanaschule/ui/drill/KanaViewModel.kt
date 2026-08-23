@@ -38,6 +38,7 @@ import moe.rorita.kanaschule.store.epochDayOf
 import moe.rorita.kanaschule.audio.AudioPlayer
 import moe.rorita.kanaschule.audio.createAudioPlayer
 import moe.rorita.kanaschule.ui.learn.LearnCard
+import moe.rorita.kanaschule.ui.learn.LearnState
 
 /**
  * Haelt den Lernstand und die laufende Session.
@@ -66,9 +67,13 @@ class KanaViewModel(
     private val missed = ArrayList<MissedEntry>()
     private val audio: AudioPlayer = createAudioPlayer()
 
-    /** Neue Zeichen, die vor dem Abfragen noch vorgestellt werden. */
+    /** Die Zeichen, die gerade vorgestellt werden. */
     private var learnQueue: List<Kana> = emptyList()
     private var learnIndex: Int = 0
+
+    /** true, wenn der Lernmodus aus dem Hauptmenue kommt. */
+    private var learnStandalone: Boolean = false
+    private var learnShowAll: Boolean = false
 
     /**
      * Eigener Scope statt viewModelScope: der laeuft auf Dispatchers.Main, und
@@ -88,7 +93,11 @@ class KanaViewModel(
     init {
         appState = store.load()
         theme = appState.settings.theme
-        ui = DrillUiState(loading = false, home = homeInfo())
+        ui = DrillUiState(
+            loading = false,
+            home = homeInfo(),
+            muted = appState.settings.muteAudio,
+        )
     }
 
     override fun onCleared() {
@@ -135,6 +144,7 @@ class KanaViewModel(
         val readiness = readinessAll()
         learnQueue = plan.newItems.map(KanaTable::require)
         learnIndex = 0
+        learnStandalone = false
 
         ui = ui.copy(
             learn = null,
@@ -158,23 +168,110 @@ class KanaViewModel(
 
     // --------------------------------------------------------------- Lernen
 
-    private fun showLearnCard() {
-        ui = ui.copy(learn = cardFor(learnQueue[learnIndex]), kana = null)
+    /**
+     * Lernmodus aus dem Hauptmenue: zum Blaettern, ohne dass danach abgefragt
+     * wird. Ohne Haken sind es die noch nicht gelernten Zeichen der
+     * freigeschalteten Gruppen - das ist das, was als Naechstes dran ist.
+     */
+    fun startLearning(showAll: Boolean = learnShowAll) {
+        learnStandalone = true
+        learnShowAll = showAll
+        learnQueue = learnScope()
+        learnIndex = 0
+
+        if (learnQueue.isEmpty()) {
+            // Alles der freigeschalteten Gruppen schon gesehen: dann zeigen
+            // wir eben alles, statt eine leere Liste anzubieten.
+            learnShowAll = true
+            learnQueue = learnScope()
+        }
+        if (learnQueue.isEmpty()) return
+        showLearnCard()
     }
 
-    /** Weiter zur naechsten Vorstellungskarte, danach beginnt das Abfragen. */
-    fun nextLearnCard() {
-        learnIndex++
-        if (learnIndex >= learnQueue.size) {
-            ui = ui.copy(learn = null)
-            beginDrill()
-        } else {
-            showLearnCard()
+    /**
+     * Eine Karte je Lesung, nicht je Zeichen: die Karte zeigt ohnehin beide
+     * Schriften, sonst kaeme jedes Paar zweimal. Entschieden wird nach Slug
+     * und nicht nach der Lesung, weil じ und ぢ beide "ji" sind.
+     */
+    private fun learnScope(): List<Kana> {
+        val singles = KanaTable.singles
+        if (learnShowAll) return singles.distinctBy(::slugOf)
+
+        val unlocked = appState.unlockedItems
+        val unseen = singles.filter { it.id in unlocked && !appState.stateOf(it.id).seen }
+        return unseen.distinctBy(::slugOf)
+            .ifEmpty { singles.filter { it.id in unlocked }.distinctBy(::slugOf) }
+    }
+
+    private fun slugOf(kana: Kana): String = kana.id.v.substringAfter('.')
+
+    fun toggleShowAll() {
+        if (!learnStandalone) return
+        val current = ui.learn?.card?.hiragana ?: ui.learn?.card?.katakana
+        startLearning(showAll = !learnShowAll)
+        // Nach Moeglichkeit beim gerade gezeigten Zeichen bleiben.
+        current?.let { kana ->
+            val index = learnQueue.indexOfFirst { slugOf(it) == slugOf(kana) }
+            if (index >= 0) {
+                learnIndex = index
+                showLearnCard()
+            }
         }
     }
 
+    fun toggleMute() {
+        val muted = !appState.settings.muteAudio
+        appState = appState.copy(settings = appState.settings.copy(muteAudio = muted))
+        persist(null)
+        ui = ui.copy(
+            muted = muted,
+            learn = ui.learn?.copy(muted = muted),
+        )
+    }
+
+    private fun showLearnCard() {
+        ui = ui.copy(
+            learn = LearnState(
+                card = cardFor(learnQueue[learnIndex]),
+                showAll = learnShowAll,
+                muted = appState.settings.muteAudio,
+                standalone = learnStandalone,
+            ),
+            kana = null,
+        )
+    }
+
+    /** Weiter zur naechsten Karte, danach beginnt das Abfragen. */
+    fun nextLearnCard() {
+        if (learnIndex + 1 >= learnQueue.size) {
+            if (learnStandalone) {
+                leaveLearning()
+            } else {
+                ui = ui.copy(learn = null)
+                beginDrill()
+            }
+            return
+        }
+        learnIndex++
+        showLearnCard()
+    }
+
+    fun previousLearnCard() {
+        if (learnIndex == 0) return
+        learnIndex--
+        showLearnCard()
+    }
+
+    fun leaveLearning() {
+        learnQueue = emptyList()
+        learnIndex = 0
+        learnStandalone = false
+        ui = ui.copy(learn = null, home = homeInfo())
+    }
+
     fun playCurrentAudio() {
-        ui.learn?.audioName?.let(audio::play)
+        ui.learn?.card?.audioName?.let(audio::play)
     }
 
     /**
@@ -282,15 +379,19 @@ class KanaViewModel(
         )
 
         val feedback = feedbackFor(outcome, typed)
-        if (outcome.outcome != Outcome.CORRECT) {
+        val counted = outcome.outcome != Outcome.CORRECT && !outcome.introduction
+        if (counted) {
             missed += MissedEntry(kana, Romaji.normalize(typed), outcome.expected)
         }
 
         ui = ui.copy(
             typed = "",
             feedback = feedback,
-            awaitingContinue = outcome.outcome != Outcome.CORRECT,
+            // Beim Erstkontakt gibt es nichts zu bestaetigen: die Loesung stand
+            // gerade noch auf der Karte.
+            awaitingContinue = counted,
             asked = drill.asked,
+            introduced = drill.introduced,
             correct = drill.correct,
             streak = if (outcome.outcome == Outcome.CORRECT) ui.streak + 1 else 0,
             readinessNow = readinessAll(),
@@ -391,6 +492,10 @@ class KanaViewModel(
     private fun feedbackFor(outcome: moe.rorita.kanaschule.srs.AnswerOutcome, typed: String): Feedback =
         when (outcome.outcome) {
             Outcome.CORRECT -> Feedback.Correct(outcome.hint)
+            Outcome.INTRODUCED -> Feedback.Introduced(
+                expected = outcome.expected,
+                wasCorrect = outcome.verdict is Verdict.Correct,
+            )
             Outcome.SKIPPED -> Feedback.Skipped(outcome.expected)
             Outcome.TYPO -> Feedback.Typo(outcome.expected)
             Outcome.CONFUSED, Outcome.WRONG -> {

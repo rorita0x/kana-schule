@@ -16,6 +16,8 @@ data class AnswerOutcome(
     val boxBefore: Int,
     val boxAfter: Int,
     val confusedWith: KanaId?,
+    /** Erste Antwort nach der Vorstellungskarte: zaehlt nicht als Pruefung. */
+    val introduction: Boolean,
     /** Der Hinweis auf die Hepburn-Schreibweise, falls einer faellig ist. */
     val hint: String?,
     /** Bei Tippfehlern und Fehlern: die kanonische Antwort zum Anzeigen. */
@@ -42,6 +44,9 @@ class DrillSession(
     private val mutableStates = initialStates.toMutableMap()
     private val touched = LinkedHashSet<KanaId>()
 
+    /** Alles, was eine Frage verbraucht hat. */
+    val answered: Int get() = asked + introduced
+
     val mode: SessionMode = plan.mode
     val plannedSize: Int = plan.items.size
     val newItems: Set<KanaId> = plan.newItems.toSet()
@@ -50,6 +55,10 @@ class DrillSession(
         private set
 
     var asked: Int = 0
+        private set
+
+    /** Erstkontakte. Zaehlen fuer die Sessionlaenge, nicht fuer die Quote. */
+    var introduced: Int = 0
         private set
 
     var correct: Int = 0
@@ -101,11 +110,16 @@ class DrillSession(
                 confusedWith = null,
                 hint = null,
                 expected = kana.canonical,
+                introduction = false,
             )
         }
 
         // Nach zwei Tippfehlern ist es kein Tippfehler mehr.
         val effective = if (verdict is Verdict.Typo) Verdict.Wrong else verdict
+
+        if (isIntroduction(kana.id, before)) {
+            return introduce(kana, effective, before, nowMs)
+        }
 
         val after = Scheduler.apply(before, effective, latencyMs, nowMs, mode, random)
         put(kana.id, after)
@@ -148,12 +162,54 @@ class DrillSession(
             confusedWith = (effective as? Verdict.Confused)?.with,
             hint = (effective as? Verdict.Correct)?.hint,
             expected = kana.canonical,
+            introduction = false,
+        )
+    }
+
+    private fun isIntroduction(id: KanaId, before: ItemState): Boolean =
+        id in newItems && before.reps == 0
+
+    /**
+     * Der Erstkontakt landet in Box 1 und laesst Trefferquote, Ringpuffer und
+     * Fehlerzaehler unberuehrt. Wer ein Zeichen abschreibt, das gerade noch auf
+     * dem Bildschirm stand, hat es nicht gewusst - und hat es auch nicht
+     * falsch gewusst.
+     */
+    private fun introduce(
+        kana: Kana,
+        verdict: Verdict,
+        before: ItemState,
+        nowMs: Long,
+    ): AnswerOutcome {
+        put(
+            kana.id,
+            before.copy(
+                box = 1,
+                dueAtMs = nowMs + Boxes.intervalMs(1, random),
+                firstSeenMs = before.firstSeenMs ?: nowMs,
+                lastSeenMs = nowMs,
+                reps = 1,
+            ),
+        )
+        introduced++
+        typoRetries = 0
+
+        return AnswerOutcome(
+            kana = kana,
+            verdict = verdict,
+            outcome = Outcome.INTRODUCED,
+            boxBefore = before.box,
+            boxAfter = 1,
+            confusedWith = null,
+            hint = (verdict as? Verdict.Correct)?.hint,
+            expected = kana.canonical,
+            introduction = true,
         )
     }
 
     /** Naechstes Zeichen, oder null wenn die Session zu Ende ist. */
     fun advance(): Kana? {
-        if (asked >= targetAnswers) {
+        if (answered >= targetAnswers) {
             if (unsettled.isEmpty() || overtimeUsed >= overtimeLimit) {
                 current = null
                 return null
@@ -165,9 +221,9 @@ class DrillSession(
         return current
     }
 
-    val finished: Boolean get() = current == null && asked > 0
+    val finished: Boolean get() = current == null && answered > 0
 
-    val remaining: Int get() = (targetAnswers - asked).coerceAtLeast(0)
+    val remaining: Int get() = (targetAnswers - answered).coerceAtLeast(0)
 
     val medianLatencyMs: Int
         get() = if (latencies.isEmpty()) 0 else latencies.sorted()[latencies.size / 2]
