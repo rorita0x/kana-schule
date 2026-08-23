@@ -141,11 +141,11 @@ class KanaViewModel(
         )
 
         if (plan.items.isEmpty()) {
-            ui = ui.copy(home = homeInfo())
+            // Nie stillschweigend nichts tun: der Knopf muss sagen, warum.
+            persist(null)
+            ui = ui.copy(home = homeInfo(), notice = emptySessionReason(day))
             return
         }
-
-        appState = appState.withNewItemsToday(plan.newItems.size, day)
 
         val drill = DrillSession(
             plan = plan,
@@ -178,6 +178,7 @@ class KanaViewModel(
             weakest = emptyList(),
             isNewItem = false,
             result = null,
+            notice = null,
         )
 
         if (learnQueue.isEmpty()) beginDrill() else showLearnCard()
@@ -322,6 +323,38 @@ class KanaViewModel(
             isNewItem = first != null && first.id in drill.newItems,
         )
         if (first == null) finish(drill)
+    }
+
+    /**
+     * Warum gerade nichts zu üben ist. Der Unterschied ist wichtig: ein
+     * aufgebrauchtes Tagesbudget kann man anheben, eine noch nicht fällige
+     * Wiederholung nicht.
+     */
+    private fun emptySessionReason(day: Long): String {
+        val unlocked = appState.unlockedItems
+        val unseen = unlocked.count { !appState.stateOf(it).seen }
+        val budget = appState.newItemBudget(day)
+
+        if (unseen > 0 && budget == 0) {
+            return "Das Tagesbudget für neue Zeichen ist aufgebraucht. " +
+                "In den Einstellungen lässt es sich anheben."
+        }
+
+        val nextDue = unlocked.map { appState.stateOf(it) }
+            .filter { it.seen }
+            .minOfOrNull { it.dueAtMs }
+
+        if (nextDue != null) {
+            val minutes = ((nextDue - clock()) / 60_000L).coerceAtLeast(1)
+            val whenText = when {
+                minutes < 60 -> "in $minutes Minuten"
+                minutes < 24 * 60 -> "in ${minutes / 60} Stunden"
+                else -> "in ${minutes / (24 * 60)} Tagen"
+            }
+            return "Nichts fällig - die nächste Wiederholung ist $whenText."
+        }
+
+        return "Nichts zu üben. Schalte in den Einstellungen eine Gruppe frei."
     }
 
     private fun maybeUnlock(day: Long): String? {
@@ -473,6 +506,11 @@ class KanaViewModel(
             .withStates(drill.changedStates)
             .withSession(summary)
             .withDay(day, drill, readinessAfter, appState.states)
+            // Erst hier abgebucht, und nur was tatsächlich vorgestellt wurde.
+            // Beim Planen abzubuchen kostete das Budget auch für abgebrochene
+            // Runden - nach drei Fehlstarts war der Tag verbraucht, ohne dass
+            // ein einziges Zeichen gelernt war.
+            .withNewItemsToday(drill.introduced, day)
 
         persist(null)
 
@@ -492,6 +530,7 @@ class KanaViewModel(
                 readinessAfter = readinessAfter,
                 medianMs = drill.medianLatencyMs,
                 missed = missed.toList(),
+                weakest = weakest(drill),
                 topConfusion = topConfusion(drill),
                 unlockedGroupLabel = unlockedThisSession,
                 newItems = drill.newItems.size,
@@ -507,7 +546,27 @@ class KanaViewModel(
     // ----------------------------------------------------------- Einstellungen
 
     fun openSettings() {
-        ui = ui.copy(settingsOpen = true, settings = appState.settings, groups = groupInfos())
+        ui = ui.copy(
+            settingsOpen = true,
+            settings = appState.settings,
+            groups = groupInfos(),
+            newItemsUsedToday = usedToday(),
+        )
+    }
+
+    /**
+     * Tagesbudget von Hand zurücksetzen. Die Grenze ist eine Bremse, kein
+     * Gesetz - wer heute weiterlernen will, soll nicht bis Mitternacht warten.
+     */
+    fun resetDailyBudget() {
+        appState = appState.withResetNewItemsToday(epochDayOf(clock()))
+        persist(null)
+        ui = ui.copy(newItemsUsedToday = 0, notice = null, home = homeInfo())
+    }
+
+    private fun usedToday(): Int {
+        val day = epochDayOf(clock())
+        return if (appState.unlock.newItemsDay == day) appState.unlock.newItemsToday else 0
     }
 
     fun closeSettings() {
@@ -521,6 +580,7 @@ class KanaViewModel(
         persist(null)
         ui = ui.copy(
             settings = settings,
+            newItemsUsedToday = usedToday(),
             muted = settings.muteAudio,
             learn = ui.learn?.copy(muted = settings.muteAudio),
             home = homeInfo(),

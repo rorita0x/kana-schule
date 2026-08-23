@@ -161,6 +161,62 @@ fun SummaryScreen(
                 }
             }
 
+            if (result.weakest.isNotEmpty()) {
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(18.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Text(
+                            text = "Schwächste Zeichen",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = "Trefferquote der letzten Antworten, nicht nur dieser Runde.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        result.weakest.forEach { entry ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            ) {
+                                Text(
+                                    text = entry.kana.glyph,
+                                    style = MaterialTheme.typography.headlineSmall,
+                                )
+                                Text(
+                                    text = entry.kana.canonical,
+                                    style = MetricTextStyle,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.weight(1f),
+                                )
+                                Text(
+                                    text = "Box ${entry.box}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Text(
+                                    text = "${(entry.accuracy * 100).toInt()} %",
+                                    style = MetricTextStyle,
+                                    color = if (entry.accuracy >= 0.7) {
+                                        MaterialTheme.colorScheme.onSurface
+                                    } else {
+                                        colors.wrong
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             result.topConfusion?.let { (a, b) ->
                 Surface(
                     shape = RoundedCornerShape(16.dp),

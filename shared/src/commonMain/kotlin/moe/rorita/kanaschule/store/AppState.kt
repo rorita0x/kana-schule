@@ -50,6 +50,11 @@ data class Settings(
      * Hauptmenü, also bevor der erste Ton kommt.
      */
     val muteAudio: Boolean = false,
+    /**
+     * Die Liste der schwächsten Zeichen in der Seitenleiste. Standardmäßig aus:
+     * das ist eine Diagnose, die beim Üben nur ablenkt.
+     */
+    val showWeakestDuringDrill: Boolean = false,
     val theme: ThemeMode = ThemeMode.SYSTEM,
 )
 
@@ -152,6 +157,10 @@ data class AppState(
         val carried = if (unlock.newItemsDay == day) unlock.newItemsToday else 0
         return copy(unlock = unlock.copy(newItemsToday = carried + count, newItemsDay = day))
     }
+
+    /** Setzt das Tagesbudget zurueck, damit man weiterlernen kann. */
+    fun withResetNewItemsToday(day: Long): AppState =
+        copy(unlock = unlock.copy(newItemsToday = 0, newItemsDay = day))
 
     fun newItemBudget(day: Long): Int {
         val used = if (unlock.newItemsDay == day) unlock.newItemsToday else 0

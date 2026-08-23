@@ -120,6 +120,16 @@ class ProgressCodecTest {
     }
 
     @Test
+    fun tagesbudgetLaesstSichVonHandZuruecksetzen() {
+        val verbraucht = AppState().withNewItemsToday(10, day = 100)
+        assertEquals(0, verbraucht.newItemBudget(100))
+
+        val frei = verbraucht.withResetNewItemsToday(day = 100)
+        assertEquals(frei.settings.dailyNewLimit, frei.newItemBudget(100))
+        assertEquals(0, frei.unlock.newItemsToday)
+    }
+
+    @Test
     fun nurEineGruppeProTag() {
         val state = AppState()
         assertTrue(state.canUnlockToday(100))
@@ -224,6 +234,7 @@ class ProgressCodecTest {
                 reviewSessionLength = 40,
                 onScreenKeyboard = true,
                 muteAudio = true,
+                showWeakestDuringDrill = true,
                 strictHepburn = true,
                 theme = ThemeMode.LIGHT,
             ),
@@ -241,5 +252,6 @@ class ProgressCodecTest {
         assertTrue(decoded.state.settings.strictHepburn)
         assertEquals(Unlock.MAX_GROUPS_PER_DAY, decoded.state.settings.groupsPerDay)
         assertEquals(false, decoded.state.settings.muteAudio)
+        assertEquals(false, decoded.state.settings.showWeakestDuringDrill)
     }
 }

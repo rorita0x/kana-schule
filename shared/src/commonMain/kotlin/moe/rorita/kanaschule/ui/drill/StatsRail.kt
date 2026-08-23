@@ -62,7 +62,7 @@ fun StatsRail(
             delta = state.readinessNow - state.readinessAtStart,
         )
 
-        if (state.weakest.isNotEmpty()) {
+        if (state.settings.showWeakestDuringDrill && state.weakest.isNotEmpty()) {
             HorizontalDivider()
             Text(
                 text = "Schwächste Zeichen",

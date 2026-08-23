@@ -79,6 +79,8 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                             state.settingsOpen -> SettingsScreen(
                                 settings = state.settings,
                                 groups = state.groups,
+                                newItemsUsedToday = state.newItemsUsedToday,
+                                onResetDailyBudget = viewModel::resetDailyBudget,
                                 onChange = viewModel::updateSettings,
                                 onUnlockThrough = viewModel::unlockThrough,
                                 onLockFrom = viewModel::lockFrom,
@@ -124,6 +126,7 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
 
                             else -> HomeScreen(
                                 info = state.home,
+                                notice = state.notice,
                                 muted = state.muted,
                                 onDrill = viewModel::startSession,
                                 onLearn = { viewModel.startLearning() },

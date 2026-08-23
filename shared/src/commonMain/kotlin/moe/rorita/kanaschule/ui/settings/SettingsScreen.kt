@@ -41,6 +41,8 @@ import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 fun SettingsScreen(
     settings: Settings,
     groups: List<GroupInfo>,
+    newItemsUsedToday: Int,
+    onResetDailyBudget: () -> Unit,
     onChange: ((Settings) -> Settings) -> Unit,
     onUnlockThrough: (String) -> Unit,
     onLockFrom: (String) -> Unit,
@@ -79,6 +81,32 @@ fun SettingsScreen(
                 )
 
                 Section("Lernen") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Heute verbraucht",
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Text(
+                                text = "$newItemsUsedToday von ${settings.dailyNewLimit} " +
+                                    "neuen Zeichen",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        OutlinedButton(
+                            onClick = onResetDailyBudget,
+                            enabled = newItemsUsedToday > 0,
+                        ) {
+                            Text("Zurücksetzen")
+                        }
+                    }
+                    HorizontalDivider()
+
                     ChoiceRow(
                         label = "Neue Zeichen pro Tag",
                         description = "Bremse gegen den Wiederholungsstau in drei Tagen.",
@@ -134,6 +162,17 @@ fun SettingsScreen(
                 }
 
                 Section("Darstellung") {
+                    SwitchRow(
+                        label = "Schwächste Zeichen beim Üben zeigen",
+                        description = "In der Seitenleiste breiter Fenster. Aus, weil es " +
+                            "eine Diagnose ist und beim Üben ablenkt.",
+                        checked = settings.showWeakestDuringDrill,
+                        onToggle = {
+                            onChange { it.copy(showWeakestDuringDrill = !it.showWeakestDuringDrill) }
+                        },
+                    )
+                    HorizontalDivider()
+
                     ChoiceRow(
                         label = "Design",
                         description = null,

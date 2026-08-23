@@ -62,6 +62,8 @@ data class SessionResult(
     val readinessAfter: Int,
     val medianMs: Int,
     val missed: List<MissedEntry>,
+    /** Diagnose zum Abschluss: hier gehört sie hin, nicht ins laufende Üben. */
+    val weakest: List<WeakEntry>,
     val topConfusion: Pair<Kana, Kana>?,
     val unlockedGroupLabel: String?,
     val newItems: Int,
@@ -93,8 +95,12 @@ data class DrillUiState(
     val muted: Boolean = false,
     val settings: Settings = Settings(),
     val settingsOpen: Boolean = false,
+    /** Erklärung, wenn gerade nichts zu üben ist. */
+    val notice: String? = null,
     /** Freischaltstand für den Einstellungs-Bildschirm. */
     val groups: List<GroupInfo> = emptyList(),
+    /** Heute schon verbrauchte neue Zeichen, für die Einstellungen. */
+    val newItemsUsedToday: Int = 0,
     /** Gesetzt, solange Zeichen vorgestellt werden. */
     val learn: LearnState? = null,
     val kana: Kana? = null,

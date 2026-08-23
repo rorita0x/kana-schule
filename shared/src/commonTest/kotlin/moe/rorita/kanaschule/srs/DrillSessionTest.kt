@@ -329,4 +329,15 @@ class DrillSessionTest {
         assertEquals(1, session.asked)
         assertEquals(0, session.introduced)
     }
+
+    @Test
+    fun abgebrocheneSessionStelltNichtsVor() {
+        // Die Grundlage der Tagesbudget-Abrechnung: wer eine Runde startet und
+        // sofort abbricht, hat kein neues Zeichen gelernt.
+        val session = session(plan("h.a", "h.i", new = listOf("h.a", "h.i")))
+        session.start()
+        assertEquals(0, session.introduced)
+        assertEquals(0, session.answered)
+        assertTrue(session.changedStates.isEmpty())
+    }
 }

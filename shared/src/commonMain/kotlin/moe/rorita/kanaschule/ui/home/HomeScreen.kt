@@ -39,21 +39,27 @@ import moe.rorita.kanaschule.ui.theme.MetricTextStyle
 @Composable
 fun HomeScreen(
     info: HomeInfo,
+    notice: String?,
     muted: Boolean,
     onDrill: () -> Unit,
     onLearn: () -> Unit,
     onToggleMute: () -> Unit,
     onSettings: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+    // Die scrollende Spalte muss die Flaeche fuellen, damit sie einen
+    // begrenzten Sichtbereich hat. Ohne fillMaxSize ist sie so hoch wie ihr
+    // Inhalt, wird zentriert oben und unten abgeschnitten - und abgeschnittene
+    // Bereiche nehmen keine Klicks mehr an.
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier
                 .widthIn(max = CONTENT_MAX.dp)
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -130,6 +136,21 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth().height(56.dp),
             ) {
                 Text(text = "Üben", style = MaterialTheme.typography.titleMedium)
+            }
+
+            notice?.let {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(14.dp),
+                    )
+                }
             }
 
             OutlinedButton(
