@@ -15,6 +15,7 @@ kotlin {
         namespace = "moe.rorita.kanaschule.shared"
         compileSdk = libs.versions.androidCompileSdk.get().toInt()
         minSdk = libs.versions.androidMinSdk.get().toInt()
+        withHostTest {}
     }
 
     jvm("desktop")
