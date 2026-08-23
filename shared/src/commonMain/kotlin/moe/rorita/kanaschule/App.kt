@@ -40,12 +40,19 @@ import moe.rorita.kanaschule.ui.layout.WindowClass
 import moe.rorita.kanaschule.ui.learn.LearnScreen
 import moe.rorita.kanaschule.ui.settings.SettingsScreen
 import moe.rorita.kanaschule.ui.theme.KanaTheme
+import moe.rorita.kanaschule.ui.nav.PlatformBackHandler
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
     val state = viewModel.ui
     val focus = remember { FocusRequester() }
+
+    // Eine Ebene zurück statt App beenden. Auf dem Startbildschirm gibt die
+    // Taste ans System ab.
+    PlatformBackHandler(enabled = !state.loading && !state.atHome) {
+        viewModel.goBack()
+    }
 
     KanaTheme(mode = viewModel.theme) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

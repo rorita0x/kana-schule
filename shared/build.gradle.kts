@@ -48,6 +48,13 @@ kotlin {
         getByName("desktopMain").dependencies {
             implementation(compose.desktop.currentOs)
         }
+
+        // Dasselbe Artefakt, das :androidApp schon benutzt. Gebraucht fuer den
+        // BackHandler: der plattformuebergreifende von Compose liegt in einem
+        // eigenen Artefakt, und dafuer lohnt keine weitere Abhaengigkeit.
+        androidMain.get().dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
     }
 }
 

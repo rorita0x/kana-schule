@@ -120,6 +120,10 @@ data class DrillUiState(
     val isNewItem: Boolean = false,
     val result: SessionResult? = null,
 ) {
+    /** Startbildschirm: von hier führt die Rückwärtstaste aus der App heraus. */
+    val atHome: Boolean
+        get() = !settingsOpen && result == null && learn == null && kana == null
+
     /** Verbrauchte Fragen, Erstkontakte eingeschlossen. */
     val answered: Int get() = asked + introduced
 

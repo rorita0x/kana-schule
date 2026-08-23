@@ -365,6 +365,19 @@ class KanaViewModel(
         return group.labelDe
     }
 
+    /**
+     * Eine Ebene zurück - für die Rückwärtstaste von Android. Dieselben Wege
+     * wie die Schaltflächen im Bild, damit beides nicht auseinanderläuft.
+     */
+    fun goBack() {
+        when {
+            ui.settingsOpen -> closeSettings()
+            ui.result != null -> leaveSummary()
+            ui.learn != null -> if (ui.learn?.standalone == true) leaveLearning() else abandonSession()
+            ui.kana != null -> abandonSession()
+        }
+    }
+
     // --------------------------------------------------------------- Eingabe
 
     fun type(char: Char) {
