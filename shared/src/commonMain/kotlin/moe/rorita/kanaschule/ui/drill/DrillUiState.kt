@@ -86,6 +86,8 @@ data class HomeInfo(
     val currentGroupLabel: String = "",
     val newItemsAvailable: Int = 0,
     val dayStreak: Int = 0,
+    /** „in zwei Stunden“, oder null wenn schon etwas fällig ist. */
+    val nextDueLabel: String? = null,
     val loadProblem: String? = null,
 )
 

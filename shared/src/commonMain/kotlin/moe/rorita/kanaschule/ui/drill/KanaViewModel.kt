@@ -347,13 +347,7 @@ class KanaViewModel(
             .minOfOrNull { it.dueAtMs }
 
         if (nextDue != null) {
-            val minutes = ((nextDue - clock()) / 60_000L).coerceAtLeast(1)
-            val whenText = when {
-                minutes < 60 -> "in $minutes Minuten"
-                minutes < 24 * 60 -> "in ${minutes / 60} Stunden"
-                else -> "in ${minutes / (24 * 60)} Tagen"
-            }
-            return "Nichts fällig - die nächste Wiederholung ist $whenText."
+            return "Nichts fällig - die nächste Wiederholung ist ${inWords(nextDue - clock())}."
         }
 
         return "Nichts zu üben. Schalte in den Einstellungen eine Gruppe frei."
@@ -735,6 +729,21 @@ class KanaViewModel(
     private fun currentStates(): Map<KanaId, ItemState> =
         session?.states ?: appState.states
 
+    /**
+     * Wann der nächste Abstand abgelaufen ist, oder null wenn gerade etwas
+     * fällig ist. Ohne diese Angabe ist die Wartezeit für den Lernenden
+     * unsichtbar und fühlt sich wie ein Defekt an.
+     */
+    private fun nextDueLabel(nowMs: Long): String? {
+        val states = appState.states
+        val next = appState.unlockedItems
+            .mapNotNull { states[it] }
+            .filter { it.seen }
+            .minOfOrNull { it.dueAtMs }
+            ?: return null
+        return if (next <= nowMs) null else inWords(next - nowMs)
+    }
+
     private fun homeInfo(): HomeInfo {
         val now = clock()
         val states = appState.states
@@ -760,6 +769,7 @@ class KanaViewModel(
                 ?.let { UnlockGroups.byId[it]?.labelDe } ?: "",
             newItemsAvailable = unlocked.count { (states[it]?.reps ?: 0) == 0 },
             dayStreak = dayStreak(day),
+            nextDueLabel = nextDueLabel(now),
             loadProblem = store.lastLoadProblem,
         )
     }
@@ -789,6 +799,24 @@ class KanaViewModel(
         const val NEW_PER_SESSION_MAX = 6
         const val WEAKEST_COUNT = 8
         private const val MAX_LATENCY_MS = 120_000L
+    }
+}
+
+/**
+ * Abstand in Worten, für „die nächste Wiederholung ist in zwei Stunden".
+ *
+ * An einer Stelle, weil die Singularformen sonst an jeder Fundstelle einzeln
+ * falsch sind.
+ */
+internal fun inWords(deltaMs: Long): String {
+    val minutes = (deltaMs / 60_000L).coerceAtLeast(1)
+    return when {
+        minutes == 1L -> "in einer Minute"
+        minutes < 60 -> "in $minutes Minuten"
+        minutes < 120 -> "in einer Stunde"
+        minutes < 24 * 60 -> "in ${minutes / 60} Stunden"
+        minutes < 2 * 24 * 60 -> "morgen"
+        else -> "in ${minutes / (24 * 60)} Tagen"
     }
 }
 

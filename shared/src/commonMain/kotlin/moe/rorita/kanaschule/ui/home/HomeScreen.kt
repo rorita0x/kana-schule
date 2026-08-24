@@ -131,11 +131,27 @@ fun HomeScreen(
                 }
             }
 
+            // Ist nichts fällig, heisst der Knopf, was er dann tut. Üben ist
+            // jederzeit erlaubt - es hebt nur keine Box, und das soll man
+            // vorher wissen statt hinterher zu rätseln.
+            val nothingDue = info.dueNow == 0 && info.newItemsAvailable == 0
+
             Button(
                 onClick = onDrill,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
             ) {
-                Text(text = "Üben", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = if (nothingDue) "Zusatzübung" else "Üben",
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+
+            info.nextDueLabel?.let {
+                Text(
+                    text = "Nächste fällige Wiederholung $it.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             notice?.let {
