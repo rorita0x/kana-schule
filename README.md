@@ -121,6 +121,12 @@ Jedes Intervall streut ±10 %, damit keine Wiederholungslawinen entstehen.
 Eine Antwort über 6 Sekunden hebt ab Box 4 nicht mehr auf: das ist
 Rekonstruktion, kein Wiedererkennen.
 
+**Der Abstand ist die Prüfung.** Aufsteigen kann nur ein Zeichen, das auch
+fällig war — wer ein Zeichen zehn Minuten nach dem letzten Mal wieder weiß, hat
+nichts bewiesen. Üben darfst du trotzdem jederzeit: Trefferquote, Serie und
+Antwortzeit laufen weiter, die Wartezeit lässt sich nur nicht wegüben. Box 8
+braucht damit mindestens gut fünf Wochen, nicht acht richtige Antworten.
+
 **Ein Fehler kostet drei Boxen, nicht alles.** Box 8 fällt auf 5, Box 6 auf 3,
 darunter auf 1. Ein Totalabsturz nach einem einzigen Ausrutscher drillt
 Bekanntes neu und ist der Hauptgrund, aus dem Leute Wiederholungs-Apps

@@ -62,16 +62,28 @@ object Scheduler {
     ): ItemState {
         val slow = latencyMs > SLOW_MS
         val holdBack = slow && state.box >= SLOW_GUARD_BOX
-        val box = if (mode == SessionMode.SPEED || holdBack) {
+
+        // Der Abstand ist die Prüfung. Ein Zeichen, das man zehn Minuten nach
+        // dem letzten Mal wieder weiss, hat nichts bewiesen - also steigt nur
+        // auf, wer auch fällig war. Sonst wäre die Boxnummer bloss ein Zähler
+        // richtiger Antworten, und die Prüfungsreif-Zahl würde eine
+        // Behaltensleistung behaupten, die nie getestet wurde.
+        val early = nowMs < state.dueAtMs
+        val box = if (mode == SessionMode.SPEED || holdBack || early) {
             state.box
         } else {
             min(state.box + 1, Boxes.MAX)
         }
         val streak = state.streak + 1
 
+        // Zusatzübung darf die nächste Fälligkeit nicht vor sich herschieben:
+        // sonst liesse sich der Abstand wegüben.
         return state.copy(
             box = box,
-            dueAtMs = if (mode == SessionMode.SPEED) state.dueAtMs else nowMs + Boxes.intervalMs(box, random),
+            dueAtMs = when {
+                mode == SessionMode.SPEED || early -> state.dueAtMs
+                else -> nowMs + Boxes.intervalMs(box, random)
+            },
             firstSeenMs = state.firstSeenMs ?: nowMs,
             lastSeenMs = nowMs,
             reps = state.reps + 1,

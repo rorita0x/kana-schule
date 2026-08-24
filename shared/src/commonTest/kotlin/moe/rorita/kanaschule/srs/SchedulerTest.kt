@@ -37,12 +37,34 @@ class SchedulerTest {
     }
 
     @Test
-    fun achtRichtigeAntwortenErreichenDieHoechsteBox() {
+    fun achtRichtigeAntwortenMitAbstandErreichenDieHoechsteBox() {
+        var state = ItemState()
+        var clock = now
+        repeat(8) {
+            state = apply(state, correct, nowMs = clock)
+            clock = state.dueAtMs
+        }
+        assertEquals(Boxes.MAX, state.box)
+        state = apply(state, correct, nowMs = clock)
+        assertEquals(Boxes.MAX, state.box, "Box 8 ist die Obergrenze")
+    }
+
+    @Test
+    fun ohneAbstandBleibtDieBoxStehen() {
+        // Der Abstand ist die Prüfung: acht richtige Antworten in derselben
+        // Minute beweisen nur, dass das Zeichen im Kurzzeitgedächtnis liegt.
         var state = ItemState()
         repeat(8) { state = apply(state, correct) }
-        assertEquals(Boxes.MAX, state.box)
-        state = apply(state, correct)
-        assertEquals(Boxes.MAX, state.box, "Box 8 ist die Obergrenze")
+        assertEquals(1, state.box, "ohne Wartezeit gibt es keinen Aufstieg")
+        assertEquals(8, state.streak, "geübt ist trotzdem geübt")
+        assertEquals(8, state.reps)
+    }
+
+    @Test
+    fun zusatzuebungSchiebtDieFaelligkeitNichtHinaus() {
+        val first = apply(ItemState(), correct)
+        val again = apply(first, correct, nowMs = now + 60_000)
+        assertEquals(first.dueAtMs, again.dueAtMs, "die Wartezeit darf nicht wegübbar sein")
     }
 
     @Test
