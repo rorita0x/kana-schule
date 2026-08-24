@@ -3,7 +3,6 @@ package moe.rorita.kanaschule.srs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.random.Random
 import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.kana.Verdict
 
@@ -40,13 +39,12 @@ object Scheduler {
         latencyMs: Int,
         nowMs: Long,
         mode: SessionMode,
-        random: Random,
     ): ItemState = when (verdict) {
         // Tippfehler sind neutral: kein Boxwechsel, kein Streak-Verlust, und die
         // Antwortzeit des Wiederholungsversuchs verfälscht den Mittelwert nicht.
         is Verdict.Typo -> state
 
-        is Verdict.Correct -> correct(state, latencyMs, nowMs, mode, random)
+        is Verdict.Correct -> correct(state, latencyMs, nowMs, mode)
 
         is Verdict.Confused -> lapse(state, nowMs, mode, confusedWith = verdict.with)
 
@@ -58,7 +56,6 @@ object Scheduler {
         latencyMs: Int,
         nowMs: Long,
         mode: SessionMode,
-        random: Random,
     ): ItemState {
         val slow = latencyMs > SLOW_MS
         val holdBack = slow && state.box >= SLOW_GUARD_BOX
@@ -82,7 +79,7 @@ object Scheduler {
             box = box,
             dueAtMs = when {
                 mode == SessionMode.SPEED || early -> state.dueAtMs
-                else -> nowMs + Boxes.intervalMs(box, random)
+                else -> nowMs + Boxes.intervalMs(box, nowMs)
             },
             firstSeenMs = state.firstSeenMs ?: nowMs,
             lastSeenMs = nowMs,

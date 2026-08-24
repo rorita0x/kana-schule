@@ -27,7 +27,7 @@ class DrillSessionTest {
         states: Map<KanaId, ItemState> = emptyMap(),
         target: Int = 30,
         overtime: Int = DrillSession.DEFAULT_OVERTIME,
-    ) = DrillSession(plan, states, Random(11), target, overtime)
+    ) = DrillSession(plan, states, target, overtime)
 
     /** Antwortet auf alles richtig, bis die Session zu Ende ist. */
     private fun playThrough(session: DrillSession, answer: (String) -> String): Int {

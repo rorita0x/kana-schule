@@ -123,7 +123,6 @@ class LearningSimulation(
                 val drill = DrillSession(
                     plan = plan,
                     initialStates = app.states,
-                    random = Random(day * 31 + index + 1),
                     targetAnswers = targetSize,
                 )
                 val sequence = ArrayList<KanaId>()

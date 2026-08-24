@@ -1,6 +1,5 @@
 package moe.rorita.kanaschule.srs
 
-import kotlin.random.Random
 import moe.rorita.kanaschule.kana.Kana
 import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.kana.KanaTable
@@ -28,13 +27,13 @@ data class AnswerOutcome(
  * Der Ablauf einer Session: welches Zeichen kommt, was eine Antwort bewirkt,
  * wann Schluss ist.
  *
- * Rein und ohne I/O. Die Uhr kommt von aussen, der Zufall auch - dieselbe
- * Session lässt sich damit im Test Zug für Zug nachspielen.
+ * Rein und ohne I/O, und ohne jeden Zufall: die Uhr kommt von aussen, die
+ * Streuung der Intervalle hängt am Zeitpunkt der Antwort. Dieselbe Session
+ * lässt sich damit im Test Zug für Zug nachspielen.
  */
 class DrillSession(
     plan: SessionPlan,
     initialStates: Map<KanaId, ItemState>,
-    private val random: Random,
     private val targetAnswers: Int = SessionBuilder.TARGET_SIZE,
     /** Nachspielzeit, um offene Fehler noch festzusetzen. */
     private val overtimeLimit: Int = DEFAULT_OVERTIME,
@@ -123,7 +122,7 @@ class DrillSession(
             return introduce(kana, effective, before, nowMs)
         }
 
-        val after = Scheduler.apply(before, effective, latencyMs, nowMs, mode, random)
+        val after = Scheduler.apply(before, effective, latencyMs, nowMs, mode)
         put(kana.id, after)
 
         asked++
@@ -187,7 +186,7 @@ class DrillSession(
             kana.id,
             before.copy(
                 box = 1,
-                dueAtMs = nowMs + Boxes.intervalMs(1, random),
+                dueAtMs = nowMs + Boxes.intervalMs(1, nowMs),
                 firstSeenMs = before.firstSeenMs ?: nowMs,
                 lastSeenMs = nowMs,
                 reps = 1,

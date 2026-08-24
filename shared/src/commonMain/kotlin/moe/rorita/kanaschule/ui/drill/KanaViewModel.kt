@@ -151,7 +151,6 @@ class KanaViewModel(
         val drill = DrillSession(
             plan = plan,
             initialStates = appState.states,
-            random = Random(seed + 1),
             targetAnswers = appState.settings.reviewSessionLength,
             strictHepburn = appState.settings.strictHepburn,
         )

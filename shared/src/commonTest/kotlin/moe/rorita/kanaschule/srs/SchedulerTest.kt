@@ -1,6 +1,5 @@
 package moe.rorita.kanaschule.srs
 
-import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -13,7 +12,6 @@ import moe.rorita.kanaschule.kana.Verdict
 class SchedulerTest {
 
     private val now = 1_000_000_000L
-    private val random = Random(42)
     private val correct = Verdict.Correct(RomajiSystem.HEPBURN, hint = null)
     private val confused = Verdict.Confused(KanaId("k.tsu"), ConfusionKind.VISUAL)
 
@@ -23,7 +21,7 @@ class SchedulerTest {
         latencyMs: Int = 1500,
         mode: SessionMode = SessionMode.REVIEW,
         nowMs: Long = now,
-    ) = Scheduler.apply(state, verdict, latencyMs, nowMs, mode, random)
+    ) = Scheduler.apply(state, verdict, latencyMs, nowMs, mode)
 
     @Test
     fun richtigeAntwortSteigtEineBoxUndPlantVoraus() {
