@@ -27,7 +27,8 @@ Drill im breiten Fenster (Zwei-Spalten), Lernkarte, Einstellungen.
 ## Für wen das gedacht ist
 
 Für Anfänger, die **Kana lesen** lernen wollen, und zwar schnell und
-vollständig.
+vollständig. <br/>
+Man kann hier auch die Grundlagen der Aussprache und des Tippens lernen, aber das ist nicht der Fokus der App, sondern eher ein Nebeneffekt.
 
 Konkret passt die App, wenn du:
 
