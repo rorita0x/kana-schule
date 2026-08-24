@@ -12,6 +12,10 @@ import moe.rorita.kanaschule.kana.KanaId
 class SessionQueue(initial: List<KanaId>) {
 
     private val queue: MutableList<KanaId> = initial.toMutableList()
+
+    /** Alle Zeichen der Runde, als Vorrat für Lückenfüller. */
+    private val pool: List<KanaId> = initial.distinct()
+    private var poolCursor = 0
     private var lastServed: KanaId? = null
 
     val remaining: Int get() = queue.size
@@ -24,6 +28,14 @@ class SessionQueue(initial: List<KanaId>) {
      */
     fun next(): KanaId? {
         if (queue.isEmpty()) return null
+
+        // Am Anfang des Lernens ist die Runde so klein, dass nach einem Fehler
+        // kein Abstand mehr im Vorrat steckt - dann stand dasselbe Zeichen
+        // zweimal hintereinander, und die zweite Antwort war vom Bildschirm
+        // abgeschrieben statt gewusst. Also einen Lückenfüller einschieben.
+        if (queue.size == 1 && queue[0] == lastServed) {
+            filler()?.let { queue.add(0, it) }
+        }
         if (queue.size > 1 && queue[0] == lastServed) {
             val first = queue[0]
             queue[0] = queue[1]
@@ -32,6 +44,22 @@ class SessionQueue(initial: List<KanaId>) {
         val id = queue.removeAt(0)
         lastServed = id
         return id
+    }
+
+    /**
+     * Ein anderes Zeichen als das letzte, der Reihe nach durch den Vorrat -
+     * damit nicht immer dasselbe als Füller herhält.
+     */
+    private fun filler(): KanaId? {
+        if (pool.size < 2) return null
+        for (i in pool.indices) {
+            val candidate = pool[(poolCursor + i) % pool.size]
+            if (candidate != lastServed) {
+                poolCursor = (poolCursor + i + 1) % pool.size
+                return candidate
+            }
+        }
+        return null
     }
 
     /** Nach einem Fehler: nach 3 und nach 10 weiteren Fragen erneut. */
