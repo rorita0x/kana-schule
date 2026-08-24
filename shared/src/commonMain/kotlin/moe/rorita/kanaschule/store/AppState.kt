@@ -196,6 +196,22 @@ data class AppState(
         return copy(unlock = unlock.copy(unlockedGroups = merged))
     }
 
+    /**
+     * Wirft den Lernstand einer Gruppe weg, ohne sie zu sperren.
+     *
+     * Gelöscht wird durch Entfernen aus [items], nicht durch Überschreiben mit
+     * Standardwerten: „nie gesehen“ *ist* die Abwesenheit des Schlüssels, und
+     * nur so greifen `seen`, der Filter für neue Zeichen und das Tagesbudget
+     * wieder wie beim ersten Mal. Die Zeichen kommen also mit Lernkarte zurück.
+     *
+     * Die Gruppe bleibt offen: wer sie zurücksetzt, will sie neu lernen und
+     * nicht auf die Leiter warten.
+     */
+    fun withGroupReset(groupId: String): AppState {
+        val group = UnlockGroups.byId[groupId] ?: return this
+        return copy(items = items - group.itemIds.map { it.v }.toSet())
+    }
+
     /** Nimmt Gruppen wieder weg, die erste bleibt immer. */
     fun withLockedFrom(groupId: String): AppState {
         val ordered = UnlockGroups.ordered

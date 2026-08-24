@@ -101,6 +101,12 @@ data class DrillUiState(
     val groups: List<GroupInfo> = emptyList(),
     /** Heute schon verbrauchte neue Zeichen, für die Einstellungen. */
     val newItemsUsedToday: Int = 0,
+    /**
+     * Gruppe, deren Zurücksetzen noch bestätigt werden muss. Die App hat
+     * nirgends einen Dialog, und für die eine zerstörende Handlung in den
+     * Einstellungen lohnt keiner - zwei Stufen über den Zustand genügen.
+     */
+    val pendingResetGroupId: String? = null,
     /** Gesetzt, solange Zeichen vorgestellt werden. */
     val learn: LearnState? = null,
     val kana: Kana? = null,

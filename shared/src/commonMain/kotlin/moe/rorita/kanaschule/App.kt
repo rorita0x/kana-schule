@@ -94,10 +94,14 @@ fun App(viewModel: KanaViewModel = viewModel { KanaViewModel() }) {
                                 settings = state.settings,
                                 groups = state.groups,
                                 newItemsUsedToday = state.newItemsUsedToday,
+                                pendingResetGroupId = state.pendingResetGroupId,
                                 onResetDailyBudget = viewModel::resetDailyBudget,
                                 onChange = viewModel::updateSettings,
                                 onUnlockThrough = viewModel::unlockThrough,
                                 onLockFrom = viewModel::lockFrom,
+                                onAskResetGroup = viewModel::askResetGroup,
+                                onCancelResetGroup = viewModel::cancelResetGroup,
+                                onResetGroup = viewModel::resetGroup,
                                 onClose = viewModel::closeSettings,
                             )
 

@@ -42,10 +42,14 @@ fun SettingsScreen(
     settings: Settings,
     groups: List<GroupInfo>,
     newItemsUsedToday: Int,
+    pendingResetGroupId: String?,
     onResetDailyBudget: () -> Unit,
     onChange: ((Settings) -> Settings) -> Unit,
     onUnlockThrough: (String) -> Unit,
     onLockFrom: (String) -> Unit,
+    onAskResetGroup: (String) -> Unit,
+    onCancelResetGroup: () -> Unit,
+    onResetGroup: (String) -> Unit,
     onClose: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -76,8 +80,12 @@ fun SettingsScreen(
             ) {
                 UnlockSection(
                     groups = groups,
+                    pendingResetGroupId = pendingResetGroupId,
                     onUnlockThrough = onUnlockThrough,
                     onLockFrom = onLockFrom,
+                    onAskResetGroup = onAskResetGroup,
+                    onCancelResetGroup = onCancelResetGroup,
+                    onResetGroup = onResetGroup,
                 )
 
                 Section("Lernen") {
@@ -214,8 +222,12 @@ fun SettingsScreen(
 @Composable
 private fun UnlockSection(
     groups: List<GroupInfo>,
+    pendingResetGroupId: String?,
     onUnlockThrough: (String) -> Unit,
     onLockFrom: (String) -> Unit,
+    onAskResetGroup: (String) -> Unit,
+    onCancelResetGroup: () -> Unit,
+    onResetGroup: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val colors = LocalFeedbackColors.current
@@ -249,8 +261,12 @@ private fun UnlockSection(
                     GroupRow(
                         group = group,
                         correctColor = colors.correct,
+                        confirmingReset = group.id == pendingResetGroupId,
                         onUnlock = { onUnlockThrough(group.id) },
                         onLock = { onLockFrom(group.id) },
+                        onAskReset = { onAskResetGroup(group.id) },
+                        onCancelReset = onCancelResetGroup,
+                        onReset = { onResetGroup(group.id) },
                     )
                 }
             }
@@ -262,8 +278,12 @@ private fun UnlockSection(
 private fun GroupRow(
     group: GroupInfo,
     correctColor: androidx.compose.ui.graphics.Color,
+    confirmingReset: Boolean,
     onUnlock: () -> Unit,
     onLock: () -> Unit,
+    onAskReset: () -> Unit,
+    onCancelReset: () -> Unit,
+    onReset: () -> Unit,
 ) {
     Surface(
         shape = RoundedCornerShape(10.dp),
@@ -282,13 +302,20 @@ private fun GroupRow(
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = group.labelDe, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    text = "${group.scriptDe} · ${group.itemCount} Zeichen" +
-                        if (group.unlocked) " · ${group.seenCount} gesehen" else "",
+                    text = when {
+                        confirmingReset ->
+                            "Lernstand von ${group.seenCount} Zeichen wegwerfen und neu lernen?"
+
+                        group.unlocked ->
+                            "${group.scriptDe} · ${group.itemCount} Zeichen · ${group.seenCount} gesehen"
+
+                        else -> "${group.scriptDe} · ${group.itemCount} Zeichen"
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            if (group.mastered) {
+            if (group.mastered && !confirmingReset) {
                 Text(
                     text = "sitzt",
                     style = MetricTextStyle,
@@ -296,10 +323,22 @@ private fun GroupRow(
                     modifier = Modifier.padding(end = 10.dp),
                 )
             }
-            if (group.unlocked) {
-                TextButton(onClick = onLock) { Text("sperren") }
-            } else {
-                Button(onClick = onUnlock) { Text("bis hier") }
+            when {
+                // Die eine zerstörende Handlung in den Einstellungen: die
+                // Zeile fragt an der Stelle nach, an der man geklickt hat.
+                confirmingReset -> {
+                    TextButton(onClick = onCancelReset) { Text("nein") }
+                    Button(onClick = onReset) { Text("löschen") }
+                }
+
+                group.unlocked -> {
+                    if (group.seenCount > 0) {
+                        TextButton(onClick = onAskReset) { Text("neu lernen") }
+                    }
+                    TextButton(onClick = onLock) { Text("sperren") }
+                }
+
+                else -> Button(onClick = onUnlock) { Text("bis hier") }
             }
         }
     }

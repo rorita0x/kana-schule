@@ -9,6 +9,7 @@ import moe.rorita.kanaschule.kana.KanaId
 import moe.rorita.kanaschule.srs.ItemState
 import moe.rorita.kanaschule.srs.SessionMode
 import moe.rorita.kanaschule.srs.Unlock
+import moe.rorita.kanaschule.srs.UnlockGroups
 
 class ProgressCodecTest {
 
@@ -217,6 +218,47 @@ class ProgressCodecTest {
     fun sperrenNimmtGruppenWiederWeg() {
         val state = AppState().withUnlockedThrough("H_TA").withLockedFrom("H_SA")
         assertEquals(listOf("H_A", "H_KA"), state.unlock.unlockedGroups)
+    }
+
+    @Test
+    fun gruppeZuruecksetzenMachtDieZeichenWiederUnbekannt() {
+        val group = UnlockGroups.byId.getValue("H_KA")
+        val gelernt = group.itemIds.associateWith { ItemState(box = 8, reps = 12, streak = 5) }
+        val state = AppState().withUnlockedThrough("H_TA").withStates(gelernt)
+
+        val zurueck = state.withGroupReset("H_KA")
+
+        assertTrue(
+            group.itemIds.none { zurueck.stateOf(it).seen },
+            "Nach dem Zurücksetzen darf kein Zeichen der Gruppe gesehen sein",
+        )
+        assertTrue(
+            group.itemIds.none { it.v in zurueck.items },
+            "Der Eintrag muss weg sein, nicht auf Standard gesetzt - sonst zählt es als gesehen",
+        )
+    }
+
+    @Test
+    fun gruppeZuruecksetzenLaesstAlleAnderenInRuhe() {
+        val ka = UnlockGroups.byId.getValue("H_KA")
+        val sa = UnlockGroups.byId.getValue("H_SA")
+        val gelernt = (ka.itemIds + sa.itemIds).associateWith { ItemState(box = 6, reps = 9) }
+        val state = AppState().withUnlockedThrough("H_TA").withStates(gelernt)
+
+        val zurueck = state.withGroupReset("H_KA")
+
+        assertTrue(sa.itemIds.all { zurueck.stateOf(it).box == 6 }, "Andere Gruppen bleiben unberührt")
+        assertEquals(
+            state.unlock.unlockedGroups,
+            zurueck.unlock.unlockedGroups,
+            "Die Gruppe bleibt freigeschaltet",
+        )
+    }
+
+    @Test
+    fun gruppeZuruecksetzenIgnoriertUnbekannteGruppen() {
+        val state = AppState().withUnlockedThrough("H_KA")
+        assertEquals(state, state.withGroupReset("GIBTS_NICHT"))
     }
 
     @Test

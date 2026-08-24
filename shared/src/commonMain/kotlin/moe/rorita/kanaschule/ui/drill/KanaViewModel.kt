@@ -372,6 +372,8 @@ class KanaViewModel(
      */
     fun goBack() {
         when {
+            // Eine offene Rückfrage ist die innerste Ebene.
+            ui.pendingResetGroupId != null -> cancelResetGroup()
             ui.settingsOpen -> closeSettings()
             ui.result != null -> leaveSummary()
             ui.learn != null -> if (ui.learn?.standalone == true) leaveLearning() else abandonSession()
@@ -577,6 +579,7 @@ class KanaViewModel(
             settings = appState.settings,
             groups = groupInfos(),
             newItemsUsedToday = usedToday(),
+            pendingResetGroupId = null,
         )
     }
 
@@ -596,7 +599,7 @@ class KanaViewModel(
     }
 
     fun closeSettings() {
-        ui = ui.copy(settingsOpen = false, home = homeInfo())
+        ui = ui.copy(settingsOpen = false, home = homeInfo(), pendingResetGroupId = null)
     }
 
     fun updateSettings(change: (Settings) -> Settings) {
@@ -627,7 +630,32 @@ class KanaViewModel(
     fun lockFrom(groupId: String) {
         appState = appState.withLockedFrom(groupId)
         persist(null)
-        ui = ui.copy(groups = groupInfos(), home = homeInfo())
+        ui = ui.copy(groups = groupInfos(), home = homeInfo(), pendingResetGroupId = null)
+    }
+
+    /** Fragt nach, bevor der Lernstand einer Gruppe wegfällt. */
+    fun askResetGroup(groupId: String) {
+        ui = ui.copy(pendingResetGroupId = groupId)
+    }
+
+    fun cancelResetGroup() {
+        ui = ui.copy(pendingResetGroupId = null)
+    }
+
+    /**
+     * Eine Gruppe von vorn lernen. Die Zeichen sind danach wieder unbekannt,
+     * kommen also mit Lernkarte zurück und verbrauchen erneut Tagesbudget -
+     * wer das Budget heute schon aufgebraucht hat, setzt es daneben zurück.
+     */
+    fun resetGroup(groupId: String) {
+        appState = appState.withGroupReset(groupId)
+        persist(null)
+        ui = ui.copy(
+            groups = groupInfos(),
+            home = homeInfo(),
+            pendingResetGroupId = null,
+            notice = null,
+        )
     }
 
     private fun groupInfos(): List<GroupInfo> {
