@@ -172,6 +172,8 @@ class KanaViewModel(
             asked = 0,
             correct = 0,
             target = minOf(appState.settings.reviewSessionLength, plan.items.size),
+            dueCount = plan.dueItems.size,
+            refreshCount = plan.items.size - plan.dueItems.size - plan.newItems.size,
             streak = 0,
             readinessAtStart = readiness,
             readinessNow = readiness,
@@ -561,6 +563,8 @@ class KanaViewModel(
                 topConfusion = topConfusion(drill),
                 unlockedGroupLabel = unlockedThisSession,
                 newItems = drill.newItems.size,
+                dueItems = drill.dueSize,
+                refreshItems = drill.refreshSize,
             ),
         )
         session = null

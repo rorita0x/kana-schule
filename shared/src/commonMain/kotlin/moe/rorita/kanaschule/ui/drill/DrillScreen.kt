@@ -316,7 +316,17 @@ private fun DrillHeader(state: DrillUiState, onQuit: () -> Unit) {
                     style = MetricTextStyle,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                if (state.streak >= STREAK_SHOW_FROM) {
+                if (state.refreshCount > 0) {
+                // Kurzform, der Kopf hat keinen Platz für beide Zahlen; die
+                // vollständige Aufteilung steht in der Seitenleiste und im
+                // Abschluss.
+                Text(
+                    text = "${state.dueCount} fällig",
+                    style = MetricTextStyle,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (state.streak >= STREAK_SHOW_FROM) {
                     Text(
                         text = "Serie ${state.streak}",
                         style = MetricTextStyle,

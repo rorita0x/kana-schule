@@ -67,6 +67,8 @@ data class SessionResult(
     val topConfusion: Pair<Kana, Kana>?,
     val unlockedGroupLabel: String?,
     val newItems: Int,
+    val dueItems: Int,
+    val refreshItems: Int,
 )
 
 @Immutable
@@ -119,6 +121,10 @@ data class DrillUiState(
     val introduced: Int = 0,
     val correct: Int = 0,
     val target: Int = 0,
+    /** Fragen dieser Runde, deren Wartezeit abgelaufen war. */
+    val dueCount: Int = 0,
+    /** Fragen ohne abgelaufene Wartezeit: Übung, aber kein Boxgewinn. */
+    val refreshCount: Int = 0,
     val streak: Int = 0,
     val readinessAtStart: Int = 0,
     val readinessNow: Int = 0,

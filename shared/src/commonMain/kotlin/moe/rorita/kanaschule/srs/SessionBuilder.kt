@@ -10,6 +10,13 @@ data class SessionPlan(
     val items: List<KanaId>,
     /** Teilmenge von [items], die zum ersten Mal auftaucht. */
     val newItems: List<KanaId>,
+    /**
+     * Teilmenge von [items], deren Wartezeit abgelaufen war. Nur diese Fragen
+     * können eine Box heben - der Rest ist Auffrischung. Der Unterschied
+     * gehört auf den Bildschirm, sonst wirkt ein Zeichen in Box 8, das in
+     * jeder Runde auftaucht, wie ein Fehler.
+     */
+    val dueItems: List<KanaId> = emptyList(),
 )
 
 /**
@@ -44,10 +51,10 @@ object SessionBuilder {
         val seen = unlocked.filter { state(it).seen }
         val picked = LinkedHashSet<KanaId>()
 
-        seen.filter { state(it).dueAtMs <= nowMs }
+        val due = seen.filter { state(it).dueAtMs <= nowMs }
             .sortedBy { state(it).dueAtMs }
             .take(DUE_MAX)
-            .let(picked::addAll)
+        picked.addAll(due)
 
         seen.filter { it !in picked && state(it).box <= WEAK_BOX }
             .sortedWith(compareBy({ state(it).box }, { -state(it).lapses }))
@@ -69,7 +76,13 @@ object SessionBuilder {
         }
 
         val items = arrange(picked.take(targetSize), newItems.toSet(), random)
-        return SessionPlan(SessionMode.REVIEW, items, newItems)
+        val dueSet = due.toSet()
+        return SessionPlan(
+            mode = SessionMode.REVIEW,
+            items = items,
+            newItems = newItems,
+            dueItems = items.filter { it in dueSet },
+        )
     }
 
     /**

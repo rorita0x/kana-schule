@@ -113,6 +113,12 @@ fun SummaryScreen(
                     if (result.newItems > 0) {
                         Line("Neue Zeichen", "${result.newItems}")
                     }
+                    if (result.refreshItems > 0) {
+                        // Nur fällige Fragen heben eine Box. Der Rest ist
+                        // Übung - nützlich, aber kein Fortschritt.
+                        Line("Fällig", "${result.dueItems}")
+                        Line("Auffrischung", "${result.refreshItems}")
+                    }
                     result.unlockedGroupLabel?.let {
                         HorizontalDivider()
                         Line("Freigeschaltet", it)

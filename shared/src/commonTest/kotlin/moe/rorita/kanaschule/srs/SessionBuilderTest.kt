@@ -26,6 +26,31 @@ class SessionBuilderTest {
     ) = SessionBuilder.review(unlocked, states, now, Random(seed), newBudget, targetSize)
 
     @Test
+    fun derPlanSagtWasFaelligWarUndWasAuffrischungIst() {
+        // Fünf Zeichen sind fällig, der Rest ist auf Wochen hinaus geplant und
+        // kommt nur mit, weil die Runde sonst nicht voll wird. Nur die fünf
+        // können eine Box heben - das muss aus dem Plan hervorgehen.
+        val faellig = unlockedIds.take(5)
+        val states = unlockedIds.associateWith { id ->
+            if (id in faellig) seen(box = 2, dueAtMs = now - 1000) else seen(box = 7, dueAtMs = now + 999_999)
+        }
+
+        val plan = build(states, newBudget = 0)
+
+        assertEquals(faellig.toSet(), plan.dueItems.toSet())
+        assertTrue(plan.items.size > plan.dueItems.size, "Aufgefüllt wurde trotzdem")
+        assertTrue(plan.dueItems.all { it in plan.items }, "dueItems muss eine Teilmenge von items sein")
+    }
+
+    @Test
+    fun neueZeichenSindNichtFaellig() {
+        // Ein Erstkontakt ist keine Wiederholung; er darf die Zahl der fälligen
+        // Fragen nicht schönen.
+        val plan = build(emptyMap(), newBudget = 4)
+        assertTrue(plan.dueItems.isEmpty(), "Neue Zeichen zählen nicht als fällig: ${plan.dueItems}")
+    }
+
+    @Test
     fun ersteSessionBestehtNurAusNeuenZeichen() {
         val plan = build(emptyMap())
         assertEquals(SessionBuilder.NEW_MAX, plan.items.size)

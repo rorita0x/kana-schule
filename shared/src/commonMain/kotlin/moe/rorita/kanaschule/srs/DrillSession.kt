@@ -52,6 +52,12 @@ class DrillSession(
     val plannedSize: Int = plan.items.size
     val newItems: Set<KanaId> = plan.newItems.toSet()
 
+    /** Wie viele Fragen der Runde wirklich fällig waren. */
+    val dueSize: Int = plan.dueItems.size
+
+    /** Der Rest, abzüglich der Erstkontakte: Auffrischung ohne Boxgewinn. */
+    val refreshSize: Int = plan.items.size - plan.dueItems.size - plan.newItems.size
+
     var current: Kana? = null
         private set
 

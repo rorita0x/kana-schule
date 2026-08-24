@@ -56,6 +56,15 @@ fun StatsRail(
 
         Metric(label = "Trefferquote", value = "${state.accuracy} %")
         Metric(label = "Serie", value = state.streak.toString())
+        if (state.refreshCount > 0) {
+            // Nur die fälligen Fragen können eine Box heben. Ohne diese Zahl
+            // wirkt ein Zeichen in Box 8, das trotzdem jede Runde auftaucht,
+            // wie ein Fehler.
+            Metric(
+                label = "Fällig",
+                value = "${state.dueCount} · ${state.refreshCount} Auffrischung",
+            )
+        }
         Metric(
             label = "Prüfungsreif",
             value = "${state.readinessNow} %",
