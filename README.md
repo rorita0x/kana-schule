@@ -27,7 +27,7 @@ Drill im breiten Fenster (Zwei-Spalten), Lernkarte, Einstellungen.
 ## Für wen das gedacht ist
 
 Für Anfänger, die **Kana lesen** lernen wollen, und zwar schnell und
-vollständig — nicht für Leute, die Japanisch „mal ausprobieren".
+vollständig.
 
 Konkret passt die App, wenn du:
 
@@ -36,9 +36,9 @@ Konkret passt die App, wenn du:
   und warnen genau da, wo deutsche Sprecher zuverlässig danebenliegen,
 - eine ehrliche Zahl willst, wie weit du bist, statt einer Streak-Anzeige,
 - offline lernen willst — es gibt keinen Account, keinen Server, keine
-  Netzwerkverbindung. Der Lernstand ist eine Datei auf deinem Gerät.
+  Netzwerkverbindung. <br/> Der Lernstand ist eine Datei auf deinem Gerät.
 
-Sie passt **nicht**, wenn du Vokabeln, Kanji oder Grammatik lernen willst.
+Sie passt **nicht**, wenn du Vokabeln, Kanji oder Grammatik lernen willst. <br/>
 Die App macht genau eine Sache.
 
 ---
