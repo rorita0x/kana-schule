@@ -251,6 +251,17 @@ Buchstaben nicht schreiben. Sie gilt trotzdem als gleichwertig.
 Voraussetzungen: JDK 17 oder neuer, für Android ein Android SDK mit Platform
 37 (Pfad in `local.properties` als `sdk.dir`).
 
+Die Aussprache-Aufnahmen liegen nicht im Repository — das Urheberrecht liegt
+bei Tofugu, siehe unten. Einmal holen, danach ist Ruhe:
+
+```bash
+./fetch-audio.sh          # 104 Aufnahmen holen und nach WAV wandeln
+./fetch-audio.sh --check  # nur sagen, was fehlt
+```
+
+Gebraucht werden dafür `curl` und `ffmpeg`. Ohne die Aufnahmen läuft die App,
+nur eben stumm; die Tests überspringen den Audioteil dann statt zu scheitern.
+
 ```bash
 ./gradlew :shared:run                 # Desktop starten
 ./gradlew :androidApp:installDebug    # aufs angeschlossene Gerät
@@ -328,8 +339,13 @@ unveröffentlicht. Kommt keine Zusage, werden sie durch eigene oder frei
 lizenzierte Aufnahmen ersetzt. Details in
 `shared/media/audio/HERKUNFT.md`.
 
+**Deshalb liegen sie nicht in diesem Repository.** Fremdes Material
+weiterzuverbreiten wäre etwas anderes, als es lokal zum Entwickeln zu
+benutzen. `./fetch-audio.sh` holt die Aufnahmen von Tofugu und wandelt sie um;
+im Repository steht nur die Liste, welche Datei zu welchem Zeichen gehört.
+
 104 Aufnahmen decken 208 Zeichen ab, weil か und カ identisch klingen. Sie
-liegen als WAV im Repository statt als MP3: die Desktop-JVM spielt ohne
+liegen lokal als WAV statt als MP3: die Desktop-JVM spielt ohne
 Zusatzbibliothek nur WAV, und gebündeltes Audio hält die App offline und ohne
 Netzwerkberechtigung.
 

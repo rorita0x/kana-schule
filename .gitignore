@@ -23,3 +23,7 @@ captures/
 
 # Sonstiges
 *.log
+
+# Aussprache-Aufnahmen: Urheberrecht bei Tofugu, siehe
+# shared/media/audio/HERKUNFT.md. Geholt werden sie von ./fetch-audio.sh
+shared/media/audio/*.wav
